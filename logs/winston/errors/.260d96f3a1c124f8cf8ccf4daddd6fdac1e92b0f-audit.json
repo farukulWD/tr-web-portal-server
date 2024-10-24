@@ -1,0 +1,25 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "E:\\Projects\\worldBank\\world-bank-bk\\logs\\winston\\errors\\.260d96f3a1c124f8cf8ccf4daddd6fdac1e92b0f-audit.json",
+    "files": [
+        {
+            "date": 1729191444290,
+            "name": "E:\\Projects\\worldBank\\world-bank-bk\\logs\\winston\\errors\\phu-2024-18-10-00-error.log",
+            "hash": "4b15bd1a2fe2bbed10584feeb59917c15b6d549bf6f49494e1c3a9d0a2cc2ce6"
+        },
+        {
+            "date": 1729230680168,
+            "name": "E:\\Projects\\worldBank\\world-bank-bk\\logs\\winston\\errors\\phu-2024-18-10-11-error.log",
+            "hash": "96e2337b4be1d60f122a06b72f07372a3b728f05bc0a4cbd18f068c32af7388a"
+        },
+        {
+            "date": 1729260073532,
+            "name": "E:\\Projects\\worldBank\\world-bank-bk\\logs\\winston\\errors\\phu-2024-18-10-20-error.log",
+            "hash": "c036fd4ef46671bf38c9b0ea2e2262772caffa5a59b9e4f11300238b21166480"
+        }
+    ],
+    "hashType": "sha256"
+}
