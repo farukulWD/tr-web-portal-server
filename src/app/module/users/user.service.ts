@@ -1,9 +1,10 @@
+
 import mongoose from 'mongoose';
 
-import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
+
 import { User } from './user.model';
-import AppError from '../../errors/AppError';
-import httpStatus from 'http-status';
+
+import { sendImageToCloudinary } from '../../utils/utils/sendImageToCloudinary';
 
 const createUserIntoDb = async (file: any, payload: any) => {
   const session = await mongoose.startSession();
