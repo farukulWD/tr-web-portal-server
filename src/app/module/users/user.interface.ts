@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Model } from 'mongoose';
 import { USER_ROLE } from './user.constant';
+import { TUserFind } from './user.model';
 
 export interface TUser extends Document {
   _id: string;
@@ -26,6 +27,7 @@ export interface TUser extends Document {
 }
 export interface UserModel extends Model<TUser> {
   userFindByMobile(mobile: string): Promise<TUser | null>;
+  userFind(payload:TUserFind):Promise<TUser|null>
   isPasswordMatched(
     plainTextPassword: string,
     hashedPassword: string,

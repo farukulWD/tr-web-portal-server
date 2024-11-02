@@ -14,7 +14,7 @@ const userValidationSchema = z.object({
         .object({
           address: z.string().optional(),
           city: z.string().optional(),
-          state: z.string().optional(),
+          thana: z.string().optional(),
           postal: z.number().optional(),
           country: z.enum(['Bangladesh']).default('Bangladesh'),
         })

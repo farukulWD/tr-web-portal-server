@@ -4,6 +4,10 @@ import config from '../../config';
 import { UserStatus } from './user.constant';
 import { TUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
+export type TUserFind={
+  id?:string,
+  mobile?:string
+}
 
 const userSchema = new Schema<TUser, UserModel>(
   {
@@ -18,7 +22,7 @@ const userSchema = new Schema<TUser, UserModel>(
       city: {
         type: String,
       },
-      state: {
+      thana: {
         type: String,
       },
       postal: {
@@ -65,7 +69,7 @@ const userSchema = new Schema<TUser, UserModel>(
     },
     role: {
       type: String,
-      enum: ['superAdmin', 'user', 'admin'],
+      enum: ['superAdmin', 'user', 'admin',"dealer"],
     },
     status: {
       type: String,
@@ -101,6 +105,9 @@ userSchema.post('save', function (doc, next) {
 
 userSchema.statics.userFindByMobile = async function (payload: string) {
   return await User.findOne({ mobile: payload }).select('+password');
+};
+userSchema.statics.userFind = async function (payload:TUserFind) {
+  return await User.findOne(payload).select('+password');
 };
 
 userSchema.statics.isPasswordMatched = async function (

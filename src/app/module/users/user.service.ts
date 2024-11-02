@@ -5,6 +5,7 @@ import { User } from './user.model';
 import AppError from '../../errors/AppError';
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import httpStatus from "http-status"
+import { userInfo } from 'os';
 
 const createUserIntoDb = async (file: any, payload: any) => {
   const session = await mongoose.startSession();
@@ -23,7 +24,8 @@ const createUserIntoDb = async (file: any, payload: any) => {
     }
 
     const existingUser = await User.findOne({ mobile: payload.mobile });
-    console.log({ existingUser });
+  
+   
 
     if (existingUser) {
       throw new AppError(httpStatus.BAD_REQUEST, 'The user already created');
