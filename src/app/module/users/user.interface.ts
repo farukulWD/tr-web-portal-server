@@ -17,7 +17,7 @@ export interface TUser extends Document {
   address?: {
     address: string;
     city: string;
-    state: string;
+    thana: string;
     postal: string;
     country: 'Bangladesh';
   };

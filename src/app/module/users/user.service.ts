@@ -6,8 +6,9 @@ import AppError from '../../errors/AppError';
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import httpStatus from "http-status"
 import { userInfo } from 'os';
+import { TUser } from './user.interface';
 
-const createUserIntoDb = async (file: any, payload: any) => {
+const createUserIntoDb = async (file: any, payload: TUser) => {
   const session = await mongoose.startSession();
 
   try {
@@ -49,6 +50,26 @@ const createUserIntoDb = async (file: any, payload: any) => {
   }
 };
 
+
+const updateUser = async (mobile: string, data:TUser) =>{
+
+
+const isExititng = await User.userFind({mobile:mobile})
+
+if (!isExititng) {
+  throw new AppError(httpStatus.BAD_REQUEST,"User not found")
+}
+
+const res = await User.findOneAndUpdate({mobile:mobile},data,{new: true})
+
+
+return res
+
+
+
+}
+
 export const UserServices = {
   createUserIntoDb,
+  updateUser
 };

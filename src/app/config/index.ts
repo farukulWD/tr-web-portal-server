@@ -11,6 +11,7 @@ dotenv.config({ path: envPath });
 export default {
     env: process.env.NODE_ENV,
     port: process.env.PORT,
+    reset_pass_ui_link:process.env.RESET_UI_LINK,
     database_url: process.env.DATABASE_URL,
     bcrypt_salt_rounds: process.env.SALT,
     jwt_access_secret: process.env.JWT_ACCESS_SECRET,

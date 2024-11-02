@@ -19,4 +19,15 @@ router.post(
   validateRequest(userValidationSchema),
   UserControllers.createUser,
 );
+router.patch(
+  '/update/:mobile',
+  //   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  // (req: Request, res: Response, next: NextFunction) => {
+  //   req.body = req.body.data;
+  //   next();
+  // },
+ 
+  // validateRequest(userValidationSchema),
+  UserControllers.updateUser,
+);
 export const UserRoutes = router;
