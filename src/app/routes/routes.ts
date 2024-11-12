@@ -16,6 +16,10 @@ const moduleRoutes =[
       path: '/auth',
       route: AuthRoutes,
     },
+    {
+      path: '/dealer',
+      route: AuthRoutes,
+    },
    
   ];
 

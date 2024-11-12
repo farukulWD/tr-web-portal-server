@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
 import config from '../../config';
-import { UserStatus } from './user.constant';
 import { TUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 export type TUserFind={
