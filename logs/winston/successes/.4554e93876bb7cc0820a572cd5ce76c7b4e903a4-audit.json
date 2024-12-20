@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\successes\\.4554e93876bb7cc0820a572cd5ce76c7b4e903a4-audit.json",
+    "files": [
+        {
+            "date": 1734660457376,
+            "name": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\successes\\phu-2024-20-12-08-success.log",
+            "hash": "bb5cbb11c5489cab5dc55161a69502a9503ae88d94838125a2014bf8d0cbdd9d"
+        }
+    ],
+    "hashType": "sha256"
+}
