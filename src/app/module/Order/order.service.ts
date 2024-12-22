@@ -12,6 +12,7 @@ const createOrder = async (payload: IOrder) => {
         throw new AppError(httpStatus.NOT_FOUND, "Dealer not found");
     }
 
+
     // Step 2: Validate all products
     const productCodes = payload.product.map(product => product.productCode);
     const products = await Product.find({ productCode: { $in: productCodes } });
@@ -28,12 +29,15 @@ const createOrder = async (payload: IOrder) => {
             throw new AppError(httpStatus.NOT_FOUND, `Product ${orderProduct.productCode} not found`);
         }
 
-        if (orderProduct.quantity > product.quantity) {
+        if (product.quantity !== undefined && orderProduct.quantity > product.quantity) {
             throw new AppError(httpStatus.BAD_REQUEST, `Insufficient quantity for product ${orderProduct.productCode}`);
         }
-        orderProduct.price = product.price
-        // Add to total (price * quantity)
-        total += orderProduct.quantity * product.price;
+        if (product.price !== undefined) {
+            orderProduct.price = product.price
+            // Add to total (price * quantity)
+            total += orderProduct.quantity * product.price;
+        }
+
     });
 
     // Step 4: Create the order
@@ -59,18 +63,18 @@ const createOrder = async (payload: IOrder) => {
 };
 
 
-const activeOrder = async(payload: IOrder[]) => {
+const activeOrder = async (payload: Partial<IOrder>) => {
     try {
         // Extract order IDs from the payload
-        const orderIds = payload.map(order => order._id);
+        let result = await Order.findOne({ orderCode: payload.orderCode })
+        if (!result) {
+            throw new AppError(httpStatus.NOT_FOUND, `Order ${payload.orderCode} not found`)
+        }
 
-        // Update all orders with the extracted IDs to set their status to "active"
-        const result = await Order.updateMany(
-            { _id: { $in: orderIds } }, // Match orders with IDs in the payload
-            { $set: { status: 'active' } } // Update status to "active"
-        );
+        await result.updateOne({ $set: { status: "active" } });
 
-        console.log(`${result.modifiedCount} orders were updated to active status.`);
+
+        console.log(`${result} orders were updated to active status.`);
         return result;
     } catch (error) {
         console.log(error);
@@ -80,7 +84,7 @@ const activeOrder = async(payload: IOrder[]) => {
 }
 
 
-export const OrderServices= {
+export const OrderServices = {
     createOrder,
     activeOrder
 }
