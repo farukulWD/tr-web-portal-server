@@ -4,6 +4,8 @@ import { Product } from "../product/product.model";
 import { User } from "../users/user.model";
 import { IOrder } from "./order.interface";
 import { Order } from "./order.model";
+import httpStatus  from 'http-status';
+
 
 const createOrder = async (payload: IOrder) => {
     // Step 1: Find the dealer
@@ -11,6 +13,10 @@ const createOrder = async (payload: IOrder) => {
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, "Dealer not found");
     }
+    let orderCode = () => {
+        return Math.floor(100000 + Math.random() * 900000);
+    };
+
 
 
     // Step 2: Validate all products
@@ -45,15 +51,14 @@ const createOrder = async (payload: IOrder) => {
         ...payload,
         total, // Include calculated total
         status: "pending",
-        approved: false
+        approved: false,
+        orderCode: orderCode(),
     };
 
     try {
         const order = await Order.create(orderData);
 
-        // Optionally, deduct the dealer's money
-        // user.money = user.money - total;
-        // await user.save();
+
 
         return order;
     } catch (error) {
@@ -63,15 +68,18 @@ const createOrder = async (payload: IOrder) => {
 };
 
 
-const activeOrder = async (payload: Partial<IOrder>) => {
+const activeOrder = async (payload : any) => {
     try {
         // Extract order IDs from the payload
-        let result = await Order.findOne({ orderCode: payload.orderCode })
+        let result = await Order.findOne({ _id: payload })
         if (!result) {
-            throw new AppError(httpStatus.NOT_FOUND, `Order ${payload.orderCode} not found`)
+            throw new AppError(httpStatus.NOT_FOUND, `Order not found`)
         }
 
         await result.updateOne({ $set: { status: "active" } });
+        // Optionally, deduct the dealer's money
+        // user.money = user.money - total;
+        // await user.save();
 
 
         console.log(`${result} orders were updated to active status.`);
@@ -83,8 +91,18 @@ const activeOrder = async (payload: Partial<IOrder>) => {
 
 }
 
+const getOrder = async () => {
+    try {
+        const order = await Order.find()
+        return order;
+    } catch (error) {
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error getting order");
+    }
+}
+
 
 export const OrderServices = {
     createOrder,
-    activeOrder
+    activeOrder,
+    getOrder
 }

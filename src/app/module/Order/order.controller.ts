@@ -1,6 +1,8 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { OrderServices } from "./order.service";
+import httpStatus  from 'http-status';
+
 
 
 const createOrder = catchAsync(async (req, res) => {
@@ -16,8 +18,8 @@ const createOrder = catchAsync(async (req, res) => {
 })
 
 const activeOrder = catchAsync(async (req, res) => {
-    const data = req.body;
-    const result = await OrderServices.activeOrder(data);
+    const {id} = req.params;
+    const result = await OrderServices.activeOrder(id);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         message: "Order activated successfully",
@@ -27,8 +29,19 @@ const activeOrder = catchAsync(async (req, res) => {
 })
 
 
+const getOrder = catchAsync(async (req, res) => {
+    const result = await OrderServices.getOrder();
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: "Order Fetched successfully",
+        success: true,
+        data: result
+    })
+})
+
 
 export const OrderController = {
     createOrder,
-    activeOrder
+    activeOrder,
+    getOrder
 }

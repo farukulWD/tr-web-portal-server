@@ -1,6 +1,8 @@
 import AppError from "../../errors/AppError";
 import { IProduct } from "./product.interface";
 import { Product } from "./product.model";
+import httpStatus  from 'http-status';
+
 
 const createProduct = async (payload: IProduct) => {
     let productCode = () => {
@@ -33,12 +35,12 @@ const getProduct = async () => {
     }
 }
 
-const updateProduct = async (payload: IProduct) => {
+const updateProduct = async (id: string, payload: IProduct) => {
     // Initialize data object
     let data: Partial<IProduct> = {};
 
     // Find the product by productCode
-    const product = await Product.findOne({ productCode: payload.productCode });
+    const product = await Product.findOne({ _id: id });
     if (!product) {
         throw new AppError(httpStatus.NOT_FOUND, "Product not found");
     }
@@ -57,10 +59,9 @@ const updateProduct = async (payload: IProduct) => {
         data.quantity = payload.quantity;
     }
 
-    try {
         // Update the product in the database
         const updatedProduct = await Product.findOneAndUpdate(
-            { productCode: payload.productCode },
+            { _id: id },
             data,
             { new: true } // Return the updated document
         );
@@ -70,9 +71,6 @@ const updateProduct = async (payload: IProduct) => {
         }
 
         return updatedProduct;
-    } catch (error) {
-        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error updating product");
-    }
 };
 
 
