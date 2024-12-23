@@ -5,13 +5,15 @@ import { TUser, UserModel } from "../users/user.interface";
 export interface TDealer extends TUser {
     code: string;
     userId: mongoose.Types.ObjectId;
-    nidNo:string;
-    nidPic:string;
-    refName:string;
-    ref:string;
-    refNid:string;
-    refMobile:string;
-    refPhoto:string;
+    nidNo: string;
+    nidPic: string;
+    refName: string;
+    ref: string;
+    refNid: string;
+    refMobile: string;
+    refPhoto: string;
+    class: string;
+    group: string;
 }
 
 // Define the schema
@@ -22,38 +24,44 @@ const dealerSchema = new Schema<TDealer>({
         unique: true,
     },
     userId: {
-        type: Schema.Types.ObjectId, 
+        type: Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
-    nidNo:{
-        type:String,
-        required:true
+    nidNo: {
+        type: String,
+        required: true
     },
-    nidPic:{
-type:String,
-required:true
+    nidPic: {
+        type: String,
+        required: true
     },
-    
-    ref:{
-        type:String,
-        required:true
+
+    ref: {
+        type: String,
+        required: true
     },
-    refNid:{
-        type:String,
-        required:true
+    refNid: {
+        type: String,
+        required: true
     },
-    refMobile:{
-        type:String,
-        required:true
+    refMobile: {
+        type: String,
+        required: true
     },
-    refPhoto:{
-        type:String,
-        required:true
+    refPhoto: {
+        type: String,
+        required: true
+    },
+    class: {
+        type: String,
+    },
+    group: {
+        type: String,
     }
 
 
-   
+
 });
 
 // Create and export the model

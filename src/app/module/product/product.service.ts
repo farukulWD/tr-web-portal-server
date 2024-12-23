@@ -1,7 +1,7 @@
 import AppError from "../../errors/AppError";
 import { IProduct } from "./product.interface";
 import { Product } from "./product.model";
-import httpStatus  from 'http-status';
+import httpStatus from 'http-status';
 
 
 const createProduct = async (payload: IProduct) => {
@@ -52,31 +52,45 @@ const updateProduct = async (id: string, payload: IProduct) => {
     if (payload.description) {
         data.description = payload.description;
     }
-    if ( payload.price !== undefined && payload.price > 0) {
+    if (payload.price !== undefined && payload.price > 0) {
         data.price = payload.price;
     }
     if (payload?.quantity !== undefined && payload.quantity > 0) {
         data.quantity = payload.quantity;
     }
 
-        // Update the product in the database
-        const updatedProduct = await Product.findOneAndUpdate(
-            { _id: id },
-            data,
-            { new: true } // Return the updated document
-        );
+    // Update the product in the database
+    const updatedProduct = await Product.findOneAndUpdate(
+        { _id: id },
+        data,
+        { new: true } // Return the updated document
+    );
 
-        if (!updatedProduct) {
-            throw new AppError(httpStatus.NOT_FOUND, "Product update failed");
-        }
+    if (!updatedProduct) {
+        throw new AppError(httpStatus.NOT_FOUND, "Product update failed");
+    }
 
-        return updatedProduct;
+    return updatedProduct;
 };
+
+const getSingleProduct = async (id: string) => {
+    try {
+        const product = await Product.findById(id)
+        if (!product) {
+            throw new AppError(httpStatus.NOT_FOUND, "Product not found");
+        }
+        return product;
+    } catch (error) {
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to get product");
+    }
+
+}
 
 
 
 export const ProductServices = {
     createProduct,
     getProduct,
-    updateProduct
+    updateProduct,
+    getSingleProduct
 }
