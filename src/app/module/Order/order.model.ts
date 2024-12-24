@@ -1,15 +1,17 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import { IOrder } from './order.interface';
 
 const orderSchema = new Schema<IOrder>({
-    dealerCode: {
-        type: String,
+    dealer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Dealer',
         required: true
     },
     product: [
         {
-            productCode: {
-                type: String,
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
                 required: true
             },
             quantity: {
@@ -33,10 +35,41 @@ const orderSchema = new Schema<IOrder>({
         type: Boolean,
         default: false
     },
+    orderType: {
+        type: String,
+        enum: ['real', 'draft'],
+    },
+    orderCode: {
+        type: String,
+    },
 
 }, {
     timestamps: true,
 })
+
+// Pre-save hook
+orderSchema.pre('save', async function (next) {
+    if (!this.isNew || this.orderCode) {
+        // If it's not a new document or productCode is already set, skip
+        return next();
+    }
+
+    let isUnique = false;
+    while (!isUnique) {
+        // Generate a random 6-digit number
+        const code = Math.floor(100000 + Math.random() * 900000);
+
+        // Check if the code already exists in the database
+        const existingProduct = await mongoose.models.Order.findOne({ productCode: code });
+
+        if (!existingProduct) {
+            // If no existing product has this code, assign it and exit the loop
+            this.orderCode = code.toString();
+            isUnique = true;
+        }
+    }
+    next();
+});
 
 
 export const Order = model<IOrder>('Order', orderSchema);

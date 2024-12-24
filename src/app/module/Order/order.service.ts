@@ -4,24 +4,22 @@ import { Product } from "../product/product.model";
 import { User } from "../users/user.model";
 import { IOrder } from "./order.interface";
 import { Order } from "./order.model";
-import httpStatus  from 'http-status';
+import httpStatus from 'http-status';
 
 
 const createOrder = async (payload: IOrder) => {
     // Step 1: Find the dealer
-    const user = await Dealer.findOne({ code: payload.dealerCode });
+    const user = await Dealer.findOne({ _id: payload.dealer });
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, "Dealer not found");
     }
-    let orderCode = () => {
-        return Math.floor(100000 + Math.random() * 900000);
-    };
-
-
+    // let orderCode = () => {
+    //     return Math.floor(100000 + Math.random() * 900000);
+    // };
 
     // Step 2: Validate all products
-    const productCodes = payload.product.map(product => product.productCode);
-    const products = await Product.find({ productCode: { $in: productCodes } });
+    const productCodes = payload.product.map(product => product.product);
+    const products = await Product.find({ _id: { $in: productCodes } });
 
     // if (products.length !== payload.product.length) {
     //     throw new AppError(httpStatus.NOT_FOUND, "One or more products not found");
@@ -30,13 +28,13 @@ const createOrder = async (payload: IOrder) => {
     // Step 3: Validate quantities and calculate total value
     let total = 0;
     payload.product.forEach(orderProduct => {
-        const product = products.find(p => p.productCode === orderProduct.productCode);
+        const product = products.find(p => p._id.toString() === orderProduct.product.toString());
         if (!product) {
-            throw new AppError(httpStatus.NOT_FOUND, `Product ${orderProduct.productCode} not found`);
+            throw new AppError(httpStatus.NOT_FOUND, `Product ${orderProduct.product} not found`);
         }
 
-        if (product.quantity !== undefined && orderProduct.quantity > product.quantity) {
-            throw new AppError(httpStatus.BAD_REQUEST, `Insufficient quantity for product ${orderProduct.productCode}`);
+        if (product.stock !== undefined && orderProduct.quantity > product.stock) {
+            throw new AppError(httpStatus.BAD_REQUEST, `Insufficient quantity for product ${orderProduct.product}`);
         }
         if (product.price !== undefined) {
             orderProduct.price = product.price
@@ -52,7 +50,6 @@ const createOrder = async (payload: IOrder) => {
         total, // Include calculated total
         status: "pending",
         approved: false,
-        orderCode: orderCode(),
     };
 
     try {
@@ -68,7 +65,7 @@ const createOrder = async (payload: IOrder) => {
 };
 
 
-const activeOrder = async (payload : any) => {
+const activeOrder = async (payload: any) => {
     try {
         // Extract order IDs from the payload
         let result = await Order.findOne({ _id: payload })
@@ -93,7 +90,16 @@ const activeOrder = async (payload : any) => {
 
 const getOrder = async () => {
     try {
-        const order = await Order.find()
+        const order = await Order.find().populate("product.product dealer")
+        return order;
+    } catch (error) {
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error getting order");
+    }
+}
+
+const getDraftOrder = async () => {
+    try {
+        const order = await Order.find({orderType: "draft"}).populate("product.product dealer")
         return order;
     } catch (error) {
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error getting order");
@@ -104,5 +110,6 @@ const getOrder = async () => {
 export const OrderServices = {
     createOrder,
     activeOrder,
-    getOrder
+    getOrder,
+    getDraftOrder
 }

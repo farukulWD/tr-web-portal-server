@@ -5,15 +5,12 @@ import httpStatus from 'http-status';
 
 
 const createProduct = async (payload: IProduct) => {
-    let productCode = () => {
-        return Math.floor(100000 + Math.random() * 900000);
-    };
+
     let data = {
         name: payload.name,
         price: payload.price,
-        productCode: productCode(),
         description: payload.description,
-        quantity: payload.quantity,
+        stock: payload.stock,
         group: payload.group,
     }
     try {
@@ -55,8 +52,8 @@ const updateProduct = async (id: string, payload: IProduct) => {
     if (payload.price !== undefined && payload.price > 0) {
         data.price = payload.price;
     }
-    if (payload?.quantity !== undefined && payload.quantity > 0) {
-        data.quantity = payload.quantity;
+    if (payload?.stock !== undefined && payload.stock > 0) {
+        data.stock = payload.stock;
     }
 
     // Update the product in the database
