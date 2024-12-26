@@ -33,26 +33,9 @@ const userSchema = new Schema<TUser, UserModel>(
         default: 'Bangladesh',
       },
     },
-    isMobileVefify: {
-      type: Boolean,
-      default: false,
-    },
-    isEmailVefify: {
-      type: Boolean,
-      default: false,
-    },
-    kyc: {
-      type: Boolean,
-      default: false,
-    },
     mobile: {
       type: String,
       required: true,
-      unique: true,
-    },
-    email: {
-      type: String,
-
       unique: true,
     },
     password: {
