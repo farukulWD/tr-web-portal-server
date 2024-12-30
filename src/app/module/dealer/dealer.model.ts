@@ -14,6 +14,7 @@ export interface TDealer extends TUser {
     refPhoto: string;
     class: string;
     group: string;
+    money: number;
 }
 
 // Define the schema
@@ -58,7 +59,11 @@ const dealerSchema = new Schema<TDealer>({
     },
     group: {
         type: String,
-    }
+    },
+    money: {
+        type: Number,
+        default: 0,
+        },
 
 
 
