@@ -8,6 +8,7 @@ const productSchema = new Schema<IProduct>({
     stock: { type: Number, default: 0 },
     group: { type: String },
     productCode: { type: String },
+    isDeleted: { type: Boolean, default: false },
 
 }, {
     timestamps: true,
