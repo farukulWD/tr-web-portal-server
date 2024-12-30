@@ -4,7 +4,7 @@ import { DealerServicess } from "./dealer.services";
 import httpStatus from "http-status";
 
 const createUserController = catchAsync(async (req, res) => {
-  const { dealerData } = req.body;
+  const  dealerData  = req.body;
 
   // Ensure req.files is defined and is an array
   const files = Array.isArray(req.files) ? req.files : [];

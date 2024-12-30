@@ -10,10 +10,10 @@ const router = Router();
 
 
 router.post("/create-dealer", upload.array('files'),
-(req: Request, res: Response, next: NextFunction) => {
-    req.body = JSON.parse(req.body.data);
-    next();
-  },
+// (req: Request, res: Response, next: NextFunction) => {
+//     req.body = JSON.parse(req.body.data);
+//     next();
+//   },
   DealerController.createUserController
 )
 

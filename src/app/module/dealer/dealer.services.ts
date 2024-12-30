@@ -53,6 +53,8 @@ const createDealerService = async (files: any[], payload: TDealer) => {
       if (!newDealer.length) {
         throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
       }
+      await User.findByIdAndUpdate({_id:user._id
+      },{role: "dealer"},{new: true})
   
       await session.commitTransaction();
       session.endSession();
