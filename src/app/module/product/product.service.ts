@@ -23,9 +23,23 @@ const createProduct = async (payload: IProduct) => {
 
 }
 
-const getProduct = async () => {
+const getProduct = async (searchTerm: string) => {
     try {
-        const product = await Product.find()
+        // Start with an empty query object
+        let query: any = {};
+
+        if (searchTerm) {
+            // Build a dynamic query that checks if the search term is found in productCode, name, or group
+            query = {
+                $or: [
+                    { productCode: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search for productCode
+                    { name: { $regex: searchTerm, $options: 'i' } },         // Case-insensitive search for name
+                    { group: { $regex: searchTerm, $options: 'i' } }         // Case-insensitive search for group
+                ],
+                isDeleted: false
+            };
+        }
+        const product = await Product.find(query)
         return product;
     } catch (error) {
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error getting product");
@@ -72,7 +86,7 @@ const updateProduct = async (id: string, payload: IProduct) => {
 
 const getSingleProduct = async (id: string) => {
     try {
-        const product = await Product.findById(id)
+        const product = await Product.findById({_id: id, isDeleted: false});
         if (!product) {
             throw new AppError(httpStatus.NOT_FOUND, "Product not found");
         }
@@ -83,11 +97,24 @@ const getSingleProduct = async (id: string) => {
 
 }
 
+const deleteProduct = async (id: string) => {
+    try {
+        const product = await Product.findByIdAndUpdate(id,{isDeleted: true})
+        if (!product) {
+            throw new AppError(httpStatus.NOT_FOUND, "Product not found");
+        }
+        return product;
+    } catch (error) {
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to delete product");
+    }
+}
+
 
 
 export const ProductServices = {
     createProduct,
     getProduct,
     updateProduct,
-    getSingleProduct
+    getSingleProduct,
+    deleteProduct
 }

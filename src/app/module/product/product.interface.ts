@@ -7,5 +7,6 @@ export interface IProduct extends Document{
     stock?: number;
     group?: string;
     productCode?: string;
+    isDeleted: boolean;
     
 }
