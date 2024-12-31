@@ -73,11 +73,23 @@ const activeOrder = async (payload: any) => {
             throw new AppError(httpStatus.NOT_FOUND, `Order not found`)
         }
 
-        await result.updateOne({ $set: { status: "active" } });
-        // Optionally, deduct the dealer's money
-        // user.money = user.money - total;
-        // await user.save();
+        const dealer = await Dealer.findOne({ _id: result.dealer })
+        if (!dealer) {
+            throw new AppError(httpStatus.NOT_FOUND, `Dealer not found`)
+        }
+        // Update the order status to "active"
+        if (dealer.money >= result.total) {
 
+
+            await result.updateOne({ $set: { status: "active" } });
+            // Optionally, deduct the dealer's money
+            // user.money = user.money - total;
+            // await user.save();
+            dealer.money = dealer.money - result.total;
+            await dealer.save();
+        } else {
+            throw new AppError(httpStatus.BAD_REQUEST, `Dealer does not have enough money`)
+        }
 
         console.log(`${result} orders were updated to active status.`);
         return result;
@@ -99,10 +111,57 @@ const getOrder = async () => {
 
 const getDraftOrder = async () => {
     try {
-        const order = await Order.find({orderType: "draft"}).populate("product.product dealer")
+        const order = await Order.find({ orderType: "draft" }).populate("product.product dealer")
         return order;
     } catch (error) {
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error getting order");
+    }
+}
+
+const cancelOrder = async (id: string) => {
+    try {
+        const order = await Order.findById(id)
+        if (!order) {
+            throw new AppError(httpStatus.NOT_FOUND, `Order not found`)
+        }
+        // Update the order status to "canceled"
+        await order.updateOne({ $set: { status: "canceled" } });
+        console.log(`${order} order was canceled.`);
+        let dealer = await Dealer.findById(order.dealer);
+        if (!dealer) {
+            throw new AppError(httpStatus.NOT_FOUND, `Dealer not found`)
+        }
+        dealer.money = dealer.money + order.total;
+        await dealer.save();
+        return order;
+    } catch (error) {
+        console.log(error);
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error cancel order");
+    }
+}
+
+const getCancelOrder = async () => {
+    try {
+        const order = await Order.find({ status: "canceled" }).populate("product.product dealer")
+        return order;
+    } catch (error) {
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error getting order");
+    }
+}
+
+const deleteOrder = async (id: string) => {
+    try {
+        const order = await Order.findById(id)
+        if (!order) {
+            throw new AppError(httpStatus.NOT_FOUND, `Order not found`)
+        }
+        // Delete the order
+        await order.deleteOne();
+        console.log(`${order} order was deleted.`);
+        return order;
+    } catch (error) {
+        console.log(error);
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error delete order");
     }
 }
 
@@ -111,5 +170,8 @@ export const OrderServices = {
     createOrder,
     activeOrder,
     getOrder,
-    getDraftOrder
+    getDraftOrder,
+    cancelOrder,
+    getCancelOrder,
+    deleteOrder 
 }
