@@ -100,18 +100,18 @@ const activeOrder = async (payload: any) => {
 
 }
 
-const getOrder = async () => {
+const getOrder = async (id :string) => {
     try {
-        const order = await Order.find().populate("product.product dealer")
+        const order = await Order.find({dealer:id}).populate("product.product dealer")
         return order;
     } catch (error) {
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error getting order");
     }
 }
 
-const getDraftOrder = async () => {
+const getDraftOrder = async (id: string) => {
     try {
-        const order = await Order.find({ orderType: "draft" }).populate("product.product dealer")
+        const order = await Order.find({ orderType: "draft" , dealer: id}).populate("product.product dealer")
         return order;
     } catch (error) {
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error getting order");
@@ -140,9 +140,9 @@ const cancelOrder = async (id: string) => {
     }
 }
 
-const getCancelOrder = async () => {
+const getCancelOrder = async (id:string) => {
     try {
-        const order = await Order.find({ status: "canceled" }).populate("product.product dealer")
+        const order = await Order.find({ status: "canceled",dealer: id }).populate("product.product dealer")
         return order;
     } catch (error) {
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error getting order");

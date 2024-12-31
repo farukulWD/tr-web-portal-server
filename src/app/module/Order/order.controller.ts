@@ -1,7 +1,7 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { OrderServices } from "./order.service";
-import httpStatus  from 'http-status';
+import httpStatus from 'http-status';
 
 
 
@@ -18,7 +18,7 @@ const createOrder = catchAsync(async (req, res) => {
 })
 
 const activeOrder = catchAsync(async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     const result = await OrderServices.activeOrder(id);
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -30,7 +30,8 @@ const activeOrder = catchAsync(async (req, res) => {
 
 
 const getOrder = catchAsync(async (req, res) => {
-    const result = await OrderServices.getOrder();
+    const { id } = req.params;
+    const result = await OrderServices.getOrder(id);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         message: "Order Fetched successfully",
@@ -40,7 +41,8 @@ const getOrder = catchAsync(async (req, res) => {
 })
 
 const getDraftOrder = catchAsync(async (req, res) => {
-    const result = await OrderServices.getDraftOrder();
+    const { id } = req.params;
+    const result = await OrderServices.getDraftOrder(id);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         message: "Order Fetched successfully",
@@ -49,10 +51,47 @@ const getDraftOrder = catchAsync(async (req, res) => {
     })
 })
 
+const cancelOrder = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await OrderServices.cancelOrder(id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: "Order cancelled successfully",
+        success: true,
+        data: result
+    })
+})
+
+const getCancelOrder = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await OrderServices.getCancelOrder(id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: "Order cancelled successfully",
+        success: true,
+        data: result
+    })
+})
+
+const deleteOrder = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await OrderServices.deleteOrder(id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: "Order deleted successfully",
+        success: true,
+        data: result
+    })
+})
+
+
 
 export const OrderController = {
     createOrder,
     activeOrder,
     getOrder,
-    getDraftOrder
+    getDraftOrder,
+    cancelOrder,
+    getCancelOrder,
+    deleteOrder
 }
