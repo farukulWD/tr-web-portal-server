@@ -29,6 +29,11 @@
             "date": 1735571223387,
             "name": "E:\\Tahsin\\tr-web-portal-server\\logs\\winston\\errors\\phu-2024-30-12-21-error.log",
             "hash": "5f4f2e6008c2ce13ca51ccf1715d12eaeb02b996e33daf87e842678ef622ee8b"
+        },
+        {
+            "date": 1735671366904,
+            "name": "E:\\Tahsin\\tr-web-portal-server\\logs\\winston\\errors\\phu-2025-01-01-00-error.log",
+            "hash": "b3c58089ab0d618eec2e6c4557c0c73e44fbbdc277fe654dea4f5152cd2b5621"
         }
     ],
     "hashType": "sha256"

@@ -18,7 +18,7 @@ export interface TUser extends Document {
     address: string;
     city: string;
     thana: string;
-    postal: string;
+    postal: number;
     country: 'Bangladesh';
   };
   isMobileVefify?: boolean;

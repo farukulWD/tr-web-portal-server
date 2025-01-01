@@ -29,6 +29,11 @@
             "date": 1735571223382,
             "name": "E:\\Tahsin\\tr-web-portal-server\\logs\\winston\\successes\\phu-2024-30-12-21-success.log",
             "hash": "bb7ed0fec4f0da4d218aa8576bdec2bdd0ad1b57e8c372f97c670a0b5c2918c1"
+        },
+        {
+            "date": 1735671366899,
+            "name": "E:\\Tahsin\\tr-web-portal-server\\logs\\winston\\successes\\phu-2025-01-01-00-success.log",
+            "hash": "ad4b7060021fdd4d5605e30f9df9323754dce211bf6a59208e8567f37f45bd78"
         }
     ],
     "hashType": "sha256"
