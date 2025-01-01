@@ -3,10 +3,10 @@ import { Schema, model } from 'mongoose';
 import config from '../../config';
 import { TUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
-export type TUserFind={
-  id?:string,
-  mobile?:string
-}
+export type TUserFind = {
+  id?: string;
+  mobile?: string;
+};
 
 const userSchema = new Schema<TUser, UserModel>(
   {
@@ -17,15 +17,19 @@ const userSchema = new Schema<TUser, UserModel>(
     address: {
       address: {
         type: String,
+        default: '',
       },
       city: {
         type: String,
+        default: '',
       },
       thana: {
         type: String,
+        default: '',
       },
       postal: {
         type: Number,
+        default: '',
       },
       country: {
         type: String,
@@ -51,7 +55,8 @@ const userSchema = new Schema<TUser, UserModel>(
     },
     role: {
       type: String,
-      enum: ['superAdmin', 'user', 'admin',"dealer"],
+      enum: ['superAdmin', 'user', 'admin', 'dealer'],
+      default: 'dealer',
     },
     status: {
       type: String,
@@ -62,10 +67,23 @@ const userSchema = new Schema<TUser, UserModel>(
       type: Boolean,
       default: false,
     },
+
+    isMobileVerify: {
+      type: Boolean,
+      default: false,
+    },
+    isEmailVerify: {
+      type: Boolean,
+      default: false,
+    },
+    kyc: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 userSchema.pre('save', async function (next) {
@@ -74,7 +92,7 @@ userSchema.pre('save', async function (next) {
   // hashing password and save into DB
   user.password = await bcrypt.hash(
     user.password,
-    Number(config.bcrypt_salt_rounds),
+    Number(config.bcrypt_salt_rounds)
   );
   next();
 });
@@ -88,20 +106,20 @@ userSchema.post('save', function (doc, next) {
 userSchema.statics.userFindByMobile = async function (payload: string) {
   return await User.findOne({ mobile: payload }).select('+password');
 };
-userSchema.statics.userFind = async function (payload:TUserFind) {
+userSchema.statics.userFind = async function (payload: TUserFind) {
   return await User.findOne(payload).select('+password');
 };
 
 userSchema.statics.isPasswordMatched = async function (
   plainTextPassword,
-  hashedPassword,
+  hashedPassword
 ) {
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 };
 
 userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
   passwordChangedTimestamp: Date,
-  jwtIssuedTimestamp: number,
+  jwtIssuedTimestamp: number
 ) {
   const passwordChangedTime =
     new Date(passwordChangedTimestamp).getTime() / 1000;
