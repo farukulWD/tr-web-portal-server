@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "E:\\Project\\tr-web-portal-server\\logs\\winston\\errors\\.fff339fd75c42c8ea00779cb649a7f2b5a901e5c-audit.json",
+    "files": [
+        {
+            "date": 1735734568386,
+            "name": "E:\\Project\\tr-web-portal-server\\logs\\winston\\errors\\phu-2025-01-01-18-error.log",
+            "hash": "26d12452dc552164b9eb2b63e259624a2fba46b33ed84a20df1bd4905da6d323"
+        },
+        {
+            "date": 1735749947108,
+            "name": "E:\\Project\\tr-web-portal-server\\logs\\winston\\errors\\phu-2025-01-01-22-error.log",
+            "hash": "7f9079869682c2298b55c957aafeef4feb84f68cc9f0b3f39767a9c5798be5e2"
+        }
+    ],
+    "hashType": "sha256"
+}
