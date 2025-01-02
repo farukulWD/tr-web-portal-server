@@ -9,10 +9,8 @@ import { userInfo } from 'os';
 import { TUser } from './user.interface';
 
 const createUserIntoDb = async (file: any, payload: TUser) => {
-  const session = await mongoose.startSession();
 
   try {
-    session.startTransaction();
     //set  generated id
 
     if (file) {
@@ -33,19 +31,11 @@ const createUserIntoDb = async (file: any, payload: TUser) => {
     }
 
     // create a user (transaction-1)
-    const newUser = await User.create([payload], { session }); // array
+    const newUser = await User.create(payload); // array
 
-    //create a student
-    if (!newUser.length) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create user');
-    }
-
-    await session.commitTransaction();
-    await session.endSession();
     return newUser;
   } catch (err: any) {
-    await session.abortTransaction();
-    await session.endSession();
+
     throw new Error(err);
   }
 };
