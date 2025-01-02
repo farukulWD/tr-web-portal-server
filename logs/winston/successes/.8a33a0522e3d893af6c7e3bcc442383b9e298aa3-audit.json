@@ -1,0 +1,25 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\My folder\\Devolopment\\tr-web-portal-server\\logs\\winston\\successes\\.8a33a0522e3d893af6c7e3bcc442383b9e298aa3-audit.json",
+    "files": [
+        {
+            "date": 1735483145594,
+            "name": "C:\\My folder\\Devolopment\\tr-web-portal-server\\logs\\winston\\successes\\phu-2024-29-12-20-success.log",
+            "hash": "f7bf9eda9b397a0fcb47c1361f5e462d9bdfcf6ba2181a4df417c1be8f61f68f"
+        },
+        {
+            "date": 1735484513155,
+            "name": "C:\\My folder\\Devolopment\\tr-web-portal-server\\logs\\winston\\successes\\phu-2024-29-12-21-success.log",
+            "hash": "a8b6fae70088f791b59f7ca0d6ef64611aec9e2cc6f891aadc5e9c16880caa09"
+        },
+        {
+            "date": 1735488147180,
+            "name": "C:\\My folder\\Devolopment\\tr-web-portal-server\\logs\\winston\\successes\\phu-2024-29-12-22-success.log",
+            "hash": "ffd512bc6b577a840d4536db8d939c622360a7b33a986521f3d7563b18de1f48"
+        }
+    ],
+    "hashType": "sha256"
+}

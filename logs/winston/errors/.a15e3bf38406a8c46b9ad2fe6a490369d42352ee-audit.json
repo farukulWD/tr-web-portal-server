@@ -1,0 +1,25 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "C:\\My folder\\Devolopment\\tr-web-portal-server\\logs\\winston\\errors\\.a15e3bf38406a8c46b9ad2fe6a490369d42352ee-audit.json",
+    "files": [
+        {
+            "date": 1735483145600,
+            "name": "C:\\My folder\\Devolopment\\tr-web-portal-server\\logs\\winston\\errors\\phu-2024-29-12-20-error.log",
+            "hash": "72d5830fbeca0e4ef73ae55d938be4f2d30664616608e5e66a94551560402e52"
+        },
+        {
+            "date": 1735484513161,
+            "name": "C:\\My folder\\Devolopment\\tr-web-portal-server\\logs\\winston\\errors\\phu-2024-29-12-21-error.log",
+            "hash": "f19703b6bdc77f9fb146170237cf06940ffa53ff399a43c1f53cd8cd74b1a9c3"
+        },
+        {
+            "date": 1735488147185,
+            "name": "C:\\My folder\\Devolopment\\tr-web-portal-server\\logs\\winston\\errors\\phu-2024-29-12-22-error.log",
+            "hash": "e890b63a469e1dc651cb75e3eebb8166cf2d9c67dd49b6d825b4f9e6eeea031a"
+        }
+    ],
+    "hashType": "sha256"
+}
