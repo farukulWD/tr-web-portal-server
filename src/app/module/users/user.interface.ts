@@ -11,7 +11,7 @@ export interface TUser extends Document {
   profileImg: string;
   password: string;
   passwordChangedAt?: Date;
-  role: 'superAdmin' | 'admin' | 'user';
+  role: 'superAdmin' | 'admin' | 'user' | 'dealer';
   status: 'active' | 'inactive';
   isDeleted: boolean;
   address?: {
@@ -21,20 +21,20 @@ export interface TUser extends Document {
     postal: number;
     country: 'Bangladesh';
   };
-  isMobileVefify?: boolean;
-  isEmailVefify?: boolean;
+  isMobileVerify?: boolean;
+  isEmailVerify?: boolean;
   kyc?: boolean;
 }
 export interface UserModel extends Model<TUser> {
   userFindByMobile(mobile: string): Promise<TUser | null>;
-  userFind(payload:TUserFind):Promise<TUser|null>
+  userFind(payload: TUserFind): Promise<TUser | null>;
   isPasswordMatched(
     plainTextPassword: string,
-    hashedPassword: string,
+    hashedPassword: string
   ): Promise<boolean>;
   isJWTIssuedBeforePasswordChanged(
     passwordChangedTimestamp: Date,
-    jwtIssuedTimestamp: number,
+    jwtIssuedTimestamp: number
   ): boolean;
 }
 

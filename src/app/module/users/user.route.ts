@@ -17,7 +17,7 @@ router.post(
   //   next();
   // },
   validateRequest(userValidationSchema),
-  UserControllers.createUser,
+  UserControllers.createUser
 );
 router.patch(
   '/update/:mobile',
@@ -26,8 +26,19 @@ router.patch(
   //   req.body = req.body.data;
   //   next();
   // },
- 
+
   // validateRequest(userValidationSchema),
-  UserControllers.updateUser,
+  UserControllers.updateUser
+);
+router.get(
+  '/get-users',
+  //   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  // (req: Request, res: Response, next: NextFunction) => {
+  //   req.body = req.body.data;
+  //   next();
+  // },
+
+  // validateRequest(userValidationSchema),
+  UserControllers.getUsers
 );
 export const UserRoutes = router;

@@ -1,10 +1,8 @@
-
-
 import mongoose from 'mongoose';
 import { User } from './user.model';
 import AppError from '../../errors/AppError';
 import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
-import httpStatus from "http-status"
+import httpStatus from 'http-status';
 import { userInfo } from 'os';
 import { TUser } from './user.interface';
 
@@ -23,8 +21,6 @@ const createUserIntoDb = async (file: any, payload: TUser) => {
     }
 
     const existingUser = await User.findOne({ mobile: payload.mobile });
-  
-   
 
     if (existingUser) {
       throw new AppError(httpStatus.BAD_REQUEST, 'The user already created');
@@ -40,26 +36,27 @@ const createUserIntoDb = async (file: any, payload: TUser) => {
   }
 };
 
+const updateUser = async (mobile: string, data: TUser) => {
+  const isExititng = await User.userFind({ mobile: mobile });
 
-const updateUser = async (mobile: string, data:TUser) =>{
+  if (!isExititng) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'User not found');
+  }
 
+  const res = await User.findOneAndUpdate({ mobile: mobile }, data, {
+    new: true,
+  });
 
-const isExititng = await User.userFind({mobile:mobile})
+  return res;
+};
+const getUsers = async () => {
+  const res = await User.find();
 
-if (!isExititng) {
-  throw new AppError(httpStatus.BAD_REQUEST,"User not found")
-}
-
-const res = await User.findOneAndUpdate({mobile:mobile},data,{new: true})
-
-
-return res
-
-
-
-}
+  return res;
+};
 
 export const UserServices = {
   createUserIntoDb,
-  updateUser
+  updateUser,
+  getUsers,
 };
