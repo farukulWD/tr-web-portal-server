@@ -6,19 +6,9 @@
     "auditLog": "E:\\Projects\\sanil\\tr-web-portal-server\\logs\\winston\\errors\\.c30f02fa077a6d07ae7cae445f584b069914ca8d-audit.json",
     "files": [
         {
-            "date": 1729793095880,
-            "name": "E:\\Projects\\sanil\\tr-web-portal-server\\logs\\winston\\errors\\phu-2024-25-10-00-error.log",
-            "hash": "f3924ad868d7aebb3b7953b1539d85aa86ec668e1b25dfd341110edea011bd16"
-        },
-        {
-            "date": 1730566850717,
-            "name": "E:\\Projects\\sanil\\tr-web-portal-server\\logs\\winston\\errors\\phu-2024-02-11-23-error.log",
-            "hash": "ca026405da86d32299e1027378a9340b79cf30e1c86239f3b2120205a926b83c"
-        },
-        {
-            "date": 1730570981761,
-            "name": "E:\\Projects\\sanil\\tr-web-portal-server\\logs\\winston\\errors\\phu-2024-03-11-00-error.log",
-            "hash": "d9190f139b3a6256cbd70994ccaabea3748d5e302596b87c2d6081989a1f2fc7"
+            "date": 1735845756061,
+            "name": "E:\\Projects\\sanil\\tr-web-portal-server\\logs\\winston\\errors\\phu-2025-03-01-01-error.log",
+            "hash": "221fb83dba74d6fa2c35da330c54e0a457319aa10961e32875441579e4df4cac"
         }
     ],
     "hashType": "sha256"
