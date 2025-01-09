@@ -153,7 +153,7 @@ const refreshToken = async (token: string) => {
 const forgetPassword = async (mobile: string) => {
   // checking if the user is exist
   const user = await User.userFind({mobile:mobile});
-  console.log(mobile);
+  
 
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
@@ -184,7 +184,7 @@ const forgetPassword = async (mobile: string) => {
 
   sendEmail(user.email as string, resetUILink);
 
-  console.log(resetUILink);
+ 
 };
 
 const resetPassword = async (

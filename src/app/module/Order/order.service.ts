@@ -91,10 +91,10 @@ const activeOrder = async (payload: any) => {
             throw new AppError(httpStatus.BAD_REQUEST, `Dealer does not have enough money`)
         }
 
-        console.log(`${result} orders were updated to active status.`);
+       
         return result;
     } catch (error) {
-        console.log(error);
+      
         throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "Error Active order");
     }
 
@@ -126,7 +126,7 @@ const cancelOrder = async (id: string) => {
         }
         // Update the order status to "canceled"
         await order.updateOne({ $set: { status: "canceled" } });
-        console.log(`${order} order was canceled.`);
+      
         let dealer = await Dealer.findById(order.dealer);
         if (!dealer) {
             throw new AppError(httpStatus.NOT_FOUND, `Dealer not found`)
