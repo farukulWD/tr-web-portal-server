@@ -19,6 +19,16 @@
             "date": 1736232840150,
             "name": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\successes\\phu-2025-07-01-12-success.log",
             "hash": "91ed3f6c4173a601b627876f044083e7202681d7a4caa37233f734c17340f7f2"
+        },
+        {
+            "date": 1736236361181,
+            "name": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\successes\\phu-2025-07-01-13-success.log",
+            "hash": "7da48f9402d2e2b4344f27876bddfc673335cd8857b6b776962c127aa2a3de56"
+        },
+        {
+            "date": 1736414531071,
+            "name": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\successes\\phu-2025-09-01-15-success.log",
+            "hash": "0690c00ee94e26290355b504a6a66ee1293293426e6d506719da1dd7762075ee"
         }
     ],
     "hashType": "sha256"

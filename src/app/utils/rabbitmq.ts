@@ -1,5 +1,6 @@
 // rabbitmq.js
 import * as amqp from "amqplib";
+import { AttendanceController } from "../module/Attendence/attendence.controller";
 // const WorkflowEngine = require("./controller/crm/workflow/WorkflowEngine");
 // const Queue = require("./model/crm/autodialer/queue");
 // const QueueConfig = require("./model/crm/autodialer/autodialerConfig");
@@ -39,7 +40,7 @@ async function listenForMessages(queue: string, onMessageReceived: OnMessageRece
   }
   await channel.assertQueue(queue, { durable: false });
 
-  channel.consume(queue, (message) => {
+  channel.consume(queue, (message: any) => {
     if (message) {
       const content = message.content.toString();
       onMessageReceived(content);
@@ -127,28 +128,28 @@ async function handleNotifications() {
 
       console.log("Notification received:", message);
 
-      // switch (message?.type) {
-      //   case "notification":
-      //     sendNotifications(message);
-      //     break;
-      //   case "newNotification":
-      //     sendNewNotification(message);
-      //     break;
-      //   case "sendEmail":
-      //     sendEmail(message);
-      //     break;
-      //   case "sendSms":
-      //     sendSms(message);
-      //     break;
-      //   case "newCronEvent":
-      //     newCronEvent(message);
-      //     break;
-      //   case "saveHistory":
-      //     saveDiffObject(message);
-      //     break;
-      //   default:
-      //     console.log("Message type not accepted");
-      // }
+      switch (message?.type) {
+        // case "notification":
+        //   sendNotifications(message);
+        //   break;
+        case "attendance":
+          AttendanceController.saveAttendance(message);
+          break;
+        // case "sendEmail":
+        //   sendEmail(message);
+        //   break;
+        // case "sendSms":
+        //   sendSms(message);
+        //   break;
+        // case "newCronEvent":
+        //   newCronEvent(message);
+        //   break;
+        // case "saveHistory":
+        //   saveDiffObject(message);
+        //   break;
+        default:
+          console.log("Message type not accepted");
+      }
 
       // console.log(`Notification processed for userTo: ${.userTo}`);
     });

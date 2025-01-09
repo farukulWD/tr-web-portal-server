@@ -5,7 +5,7 @@ import config from './app/config';
 import { errorlogger, logger } from './app/shared/logger';
 import connectDB from './app/utils/db';
 
-import { initializeSocketIO } from './app/utils/socket';
+import { initializeSocketIO} from './app/utils/socket';
 const connectRabbitMQ = rabbitMq.connect
 
 
@@ -85,6 +85,18 @@ async function bootstrap() {
           io.to(`user:${userId}`).emit("newnotification", { notification });
         }
       });
+
+      socket.on("attendance",(data:any)=>{
+        rabbitMq.sendMessageQueue(
+          "notifications",
+          JSON.stringify({
+            type: "attendance",
+            data: 
+              data,
+            
+          }),
+        );
+      })
 
 
       socket.on("disconnect", () => {
