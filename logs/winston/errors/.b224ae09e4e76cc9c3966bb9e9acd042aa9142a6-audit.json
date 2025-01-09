@@ -6,24 +6,19 @@
     "auditLog": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\errors\\.b224ae09e4e76cc9c3966bb9e9acd042aa9142a6-audit.json",
     "files": [
         {
-            "date": 1734660457382,
-            "name": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\errors\\phu-2024-20-12-08-error.log",
-            "hash": "7429726d4b2ea678fb9eb57a5cb38ab7f7344a431c88ed78d1ebfd77003a1a04"
+            "date": 1736141847399,
+            "name": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\errors\\phu-2025-06-01-11-error.log",
+            "hash": "94f078d5952eb23f5e4d8bbd95a940b3fffc30e9ff110eef412eef4d6c55ee72"
         },
         {
-            "date": 1734924113403,
-            "name": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\errors\\phu-2024-23-12-09-error.log",
-            "hash": "fa9c23668da0a0bc5344996c8e6c40d127fc8bccd2dd7c2e17a4f7867e5c5f8f"
+            "date": 1736166021378,
+            "name": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\errors\\phu-2025-06-01-18-error.log",
+            "hash": "7d651ad6c588d4acf9a47aba7337b467195af32d69150def56937d500da7334f"
         },
         {
-            "date": 1734931362280,
-            "name": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\errors\\phu-2024-23-12-11-error.log",
-            "hash": "7a4b9de74d98be4dc349b65deb188ead574e37bbe4a49d03c5fe30575a976a01"
-        },
-        {
-            "date": 1734934783880,
-            "name": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\errors\\phu-2024-23-12-12-error.log",
-            "hash": "845807e2c27ddd9e85c9cb5a2ea1aed01ef1abfda0f53358a7fd40ec624adab7"
+            "date": 1736232840155,
+            "name": "D:\\Backend\\tr-web-portal-server\\logs\\winston\\errors\\phu-2025-07-01-12-error.log",
+            "hash": "2b22c39fdd75c225b8816220470e47bec1db485a3f107560d058afb1c4ebc8cd"
         }
     ],
     "hashType": "sha256"

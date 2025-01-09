@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/http-status": "^0.2.30",
+    "amqplib": "^0.10.5",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",
@@ -23,6 +24,7 @@
     "mongoose": "^8.7.1",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.16",
+    "socket.io": "^4.8.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "winston": "^3.15.0",
