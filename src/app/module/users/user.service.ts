@@ -5,11 +5,13 @@ import { sendImageToCloudinary } from '../../utils/sendImageToCloudinary';
 import httpStatus from 'http-status';
 import { userInfo } from 'os';
 import { TUser } from './user.interface';
+import { generateUniqueCode } from '../../utils/generateUniqueCode';
 
 const createUserIntoDb = async (file: any, payload: TUser) => {
+  console.log({payload})
 
   try {
-    //set  generated id
+    
 
     if (file) {
       const imageName = `${payload?.name}`;
@@ -27,6 +29,9 @@ const createUserIntoDb = async (file: any, payload: TUser) => {
     }
 
     // create a user (transaction-1)
+    payload.code= await generateUniqueCode()
+    payload.password = payload.mobile
+    payload.role="user"
     const newUser = await User.create(payload); // array
 
     return newUser;

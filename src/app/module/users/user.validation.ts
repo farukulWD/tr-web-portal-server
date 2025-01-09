@@ -7,9 +7,8 @@ const UserStatusEnum = z.enum(['active', 'inactive']);
 // Zod Schema
 const userValidationSchema = z.object({
   body: z.object({
-    // userData: z.object({
+    userData: z.object({
     name: z.string().min(1, { message: 'Name is required' }).optional(),
-
     address: z
       .object({
         address: z.string().optional(),
@@ -22,13 +21,6 @@ const userValidationSchema = z.object({
 
     mobile: z.string().min(10, { message: 'Mobile number is required' }),
 
-    // email: z.string().email({ message: 'Invalid email address' }).optional(),
-
-    password: z
-      .string()
-      .min(6, { message: 'Password must be at least 6 characters long' })
-      .optional(),
-
     profileImg: z.string().optional(),
 
     passwordChangedAt: z.date().optional(),
@@ -39,8 +31,8 @@ const userValidationSchema = z.object({
 
     isDeleted: z.boolean().default(false).optional(),
   }),
+})
 });
-// });
 
 // For use in request validation middleware
 export { userValidationSchema };

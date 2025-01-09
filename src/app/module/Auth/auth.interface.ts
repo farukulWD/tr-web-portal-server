@@ -1,4 +1,4 @@
 export type TLoginUser = {
-  mobile: string;
+  code: string;
   password: string;
 };

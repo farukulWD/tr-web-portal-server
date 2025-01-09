@@ -14,6 +14,13 @@ const createDealerService = async (files: any[], payload: TDealer) => {
     const session = await mongoose.startSession();
     try {
       session.startTransaction();
+
+
+      
+
+
+
+
       const user = await User.findById(payload.userId);
   
       if (!user) {
@@ -60,7 +67,7 @@ const createDealerService = async (files: any[], payload: TDealer) => {
       session.endSession();
       return newDealer;
     } catch (error: any) {
-      await session.abortTransaction(); // Abort if an error occurs
+      await session.abortTransaction(); 
       session.endSession();
       throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
     }

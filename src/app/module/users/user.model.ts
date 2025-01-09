@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 export type TUserFind = {
   id?: string;
   mobile?: string;
+  code?:string
 };
 
 const userSchema = new Schema<TUser, UserModel>(
@@ -41,6 +42,11 @@ const userSchema = new Schema<TUser, UserModel>(
       type: String,
       required: true,
       unique: true,
+    },
+    code:{
+    type:String,
+    require:true,
+    unique:true
     },
     password: {
       type: String,

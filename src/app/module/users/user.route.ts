@@ -12,10 +12,10 @@ router.post(
   '/register',
   //   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   upload.single('file'),
-  // (req: Request, res: Response, next: NextFunction) => {
-  //   // req.body = req.body;
-  //   next();
-  // },
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = JSON.parse(req.body.data);
+    next();
+  },
   validateRequest(userValidationSchema),
   UserControllers.createUser
 );

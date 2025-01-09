@@ -10,7 +10,7 @@ import { User } from '../users/user.model';
 
 const loginUser = async (payload: TLoginUser) => {
   // checking if the user is exist
-  const user = await User.userFind({mobile:payload.mobile});
+  const user = await User.userFind({code:payload.code});
 
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
@@ -31,10 +31,16 @@ const loginUser = async (payload: TLoginUser) => {
 
   //create token and sent to the  client
 
+  if (!user._id) {
+    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'User ID is missing');
+  }
+
+
   const jwtPayload = {
     userId: user._id,
     mobile: user?.mobile,
     role: user.role,
+    code:user?.code
   };
 
   const accessToken = createToken(
@@ -127,9 +133,10 @@ const refreshToken = async (token: string) => {
   }
 
   const jwtPayload = {
-    userId: user._id,
-    mobile: user.mobile,
-    role: user.role,
+    userId: user?._id as string,
+    mobile: user?.mobile,
+    role: user?.role,
+    code:user?.code
   };
 
   const accessToken = createToken(
@@ -155,16 +162,18 @@ const forgetPassword = async (mobile: string) => {
   // checking if the user is blocked
   const userStatus = user?.status;
 
-  if (userStatus === 'inactive') {
-    throw new AppError(httpStatus.FORBIDDEN, 'This user is inactive ! !');
+  if (!user._id) {
+    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'User ID is missing');
   }
 
   const jwtPayload = {
     userId: user._id,
     role: user.role,
     mobile: user.mobile,
+    code:user?.code
   };
 
+  
   const resetToken = createToken(
     jwtPayload,
     config.jwt_access_secret as string,

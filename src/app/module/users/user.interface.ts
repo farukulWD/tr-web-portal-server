@@ -4,12 +4,13 @@ import { USER_ROLE } from './user.constant';
 import { TUserFind } from './user.model';
 
 export interface TUser extends Document {
-  _id: string;
+  _id?: string;
   name: string;
   email?: string;
   mobile: string;
-  profileImg: string;
+  profileImg?: string;
   password: string;
+  code?:string;
   passwordChangedAt?: Date;
   role: 'superAdmin' | 'admin' | 'user' | 'dealer';
   status: 'active' | 'inactive';
