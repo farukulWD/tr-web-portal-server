@@ -75,3 +75,22 @@ Thu Jan 09 2025 11:44:26 } [PH] info: Connected to MongoDB successfully.
 Thu Jan 09 2025 11:44:26 } [PH] info: Server running on port 5000
 Thu Jan 09 2025 11:44:26 } [PH] info: Connected to RabbitMQ
 Thu Jan 09 2025 11:44:29 } [PH] info: SIGINT received. Closing server.
+Thu Jan 09 2025 11:47:1 } [PH] info: Connected to MongoDB successfully.
+Thu Jan 09 2025 11:47:1 } [PH] info: Server running on port 5000
+Thu Jan 09 2025 11:47:1 } [PH] info: Connected to RabbitMQ
+Thu Jan 09 2025 11:49:26 } [PH] info: Connected to MongoDB successfully.
+Thu Jan 09 2025 11:49:26 } [PH] info: Server running on port 5000
+Thu Jan 09 2025 11:49:26 } [PH] info: Connected to RabbitMQ
+Thu Jan 09 2025 11:49:31 } [PH] info: Connected to MongoDB successfully.
+Thu Jan 09 2025 11:49:31 } [PH] info: Server running on port 5000
+Thu Jan 09 2025 11:49:31 } [PH] info: Connected to RabbitMQ
+Thu Jan 09 2025 11:50:41 } [PH] info: Connected to MongoDB successfully.
+Thu Jan 09 2025 11:50:41 } [PH] info: Server running on port 5000
+Thu Jan 09 2025 11:50:41 } [PH] info: Connected to RabbitMQ
+Thu Jan 09 2025 11:51:35 } [PH] info: Connected to MongoDB successfully.
+Thu Jan 09 2025 11:51:35 } [PH] info: Server running on port 5000
+Thu Jan 09 2025 11:51:35 } [PH] info: Connected to RabbitMQ
+Thu Jan 09 2025 11:53:11 } [PH] info: SIGINT received. Closing server.
+Thu Jan 09 2025 11:53:18 } [PH] info: Connected to MongoDB successfully.
+Thu Jan 09 2025 11:53:18 } [PH] info: Server running on port 5000
+Thu Jan 09 2025 11:53:18 } [PH] info: Connected to RabbitMQ
