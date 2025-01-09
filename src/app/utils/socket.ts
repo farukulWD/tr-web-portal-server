@@ -1,13 +1,16 @@
 const { Server } = require("socket.io");
+import { Server as HttpServer } from "http";
+import { Server as SocketIOServer, Socket } from "socket.io";
 // const { createAdapter } = require("@socket.io/redis-adapter");
 // const redisClient = require("./redis");
 
-let io;
+let io: SocketIOServer;
 
-const initializeSocketIO = (server) => {
-  // io = socketIo(server, {
-  //   pingTimeout: 60000,
-  // });
+interface InitializeSocketIO {
+  (server: HttpServer): SocketIOServer;
+}
+
+const initializeSocketIO: InitializeSocketIO = (server) => {
   io = new Server(server, {
     pingTimeout: 60000,
     cors: {
@@ -17,7 +20,7 @@ const initializeSocketIO = (server) => {
   try {
     // const subClient = redisClient.duplicate();
     // io.adapter(createAdapter(redisClient, subClient));
-  } catch (e) {
+  } catch (e: any) {
     console.log(e.message);
   }
 
@@ -37,7 +40,7 @@ const getIO = () => {
   return io;
 };
 
-export = {
+export {
   initializeSocketIO,
   getIO,
 };

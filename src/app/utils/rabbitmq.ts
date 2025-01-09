@@ -1,35 +1,50 @@
 // rabbitmq.js
-const amqp = require("amqplib");
+import * as amqp from "amqplib";
 // const WorkflowEngine = require("./controller/crm/workflow/WorkflowEngine");
 // const Queue = require("./model/crm/autodialer/queue");
 // const QueueConfig = require("./model/crm/autodialer/autodialerConfig");
 // const { sendNotifications } = require("./V2/controller/notification");
 
-let connection;
-let channel;
+let connection: amqp.Connection;
+let channel: amqp.Channel;
 
-async function connect(url) {
+interface ConnectOptions {
+  url: string;
+}
+
+async function connect(url: string): Promise<amqp.Channel> {
   connection = await amqp.connect(url);
   if (connection) console.log("Connected to RabbitMQ");
   channel = await connection.createChannel();
   return channel;
 }
 
-async function sendMessageQueue(queue, message) {
+interface MessageQueueOptions {
+  queue: string;
+  message: string;
+}
+
+async function sendMessageQueue(queue: string, message: string): Promise<void> {
   await channel.assertQueue(queue, { durable: false });
   channel.sendToQueue(queue, Buffer.from(message));
 }
 
-async function listenForMessages(queue, onMessageReceived) {
+interface OnMessageReceived {
+  (message: string): void;
+}
+
+async function listenForMessages(queue: string, onMessageReceived: OnMessageReceived): Promise<void> {
   if (!channel) {
     throw new Error("RabbitMQ connection not established");
   }
   await channel.assertQueue(queue, { durable: false });
 
   channel.consume(queue, (message) => {
-    const content = message.content.toString();
-    onMessageReceived(content);
-    channel.ack(message);
+    if (message) {
+      const content = message.content.toString();
+      onMessageReceived(content);
+      channel.ack(message);
+    }
   });
 }
 
@@ -112,28 +127,28 @@ async function handleNotifications() {
 
       console.log("Notification received:", message);
 
-      switch (message?.type) {
-        case "notification":
-          sendNotifications(message);
-          break;
-        case "newNotification":
-          sendNewNotification(message);
-          break;
-        case "sendEmail":
-          sendEmail(message);
-          break;
-        case "sendSms":
-          sendSms(message);
-          break;
-        case "newCronEvent":
-          newCronEvent(message);
-          break;
-        case "saveHistory":
-          saveDiffObject(message);
-          break;
-        default:
-          console.log("Message type not accepted");
-      }
+      // switch (message?.type) {
+      //   case "notification":
+      //     sendNotifications(message);
+      //     break;
+      //   case "newNotification":
+      //     sendNewNotification(message);
+      //     break;
+      //   case "sendEmail":
+      //     sendEmail(message);
+      //     break;
+      //   case "sendSms":
+      //     sendSms(message);
+      //     break;
+      //   case "newCronEvent":
+      //     newCronEvent(message);
+      //     break;
+      //   case "saveHistory":
+      //     saveDiffObject(message);
+      //     break;
+      //   default:
+      //     console.log("Message type not accepted");
+      // }
 
       // console.log(`Notification processed for userTo: ${.userTo}`);
     });
@@ -143,7 +158,7 @@ async function handleNotifications() {
 }
 
 
-export = {
+export const rabbitMq = {
   getChannel: () => channel,
   connect,
   sendMessageQueue,
@@ -152,4 +167,6 @@ export = {
   // handleWorkflowExecution,
   // handleAutodialer,
   handleNotifications
-};
+}
+
+
