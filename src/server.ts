@@ -10,6 +10,7 @@ const connectRabbitMQ = rabbitMq.connect
 
 
 
+
 async function bootstrap() {
   try {
     // Connect to the database
@@ -17,6 +18,7 @@ async function bootstrap() {
 
     // Start the server
     const server: Server = app.listen(config.port, async () => {
+      console.log(`app is listening on port ${config.port}`);
       logger.info(`Server running on port ${config.port}`);
 
       // Connect to RabbitMQ

@@ -5,8 +5,8 @@ export const generateUniqueCode = async () => {
     const prefix = `${year}`; 
   
    
-    const lastUser = await User.findOne({ uniqueCode: { $regex: `^${prefix}` } })
-      .sort({ uniqueCode: -1 })
+    const lastUser = await User.findOne({ code: { $regex: `^${prefix}` } })
+      .sort({ code: -1 })
       .exec();
   
     

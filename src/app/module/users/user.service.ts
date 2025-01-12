@@ -8,7 +8,7 @@ import { TUser } from './user.interface';
 import { generateUniqueCode } from '../../utils/generateUniqueCode';
 
 const createUserIntoDb = async (file: any, payload: TUser) => {
-  console.log({payload})
+  // console.log(file)
 
   try {
     
@@ -19,6 +19,7 @@ const createUserIntoDb = async (file: any, payload: TUser) => {
 
       //send image to cloudinary
       const { secure_url } = await sendImageToCloudinary(imageName, path);
+      console.log(secure_url)
       payload.profileImg = secure_url as string;
     }
 
