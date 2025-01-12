@@ -13,7 +13,7 @@ router.post(
   //   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.body)
+   
     req.body = JSON.parse(req.body.data);
     next();
   },
@@ -35,13 +35,7 @@ router.patch(
 );
 router.get(
   '/get-users',
-  //   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
-  // (req: Request, res: Response, next: NextFunction) => {
-  //   req.body = req.body.data;
-  //   next();
-  // },
-
-  // validateRequest(userValidationSchema),
+    // auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   UserControllers.getUsers
 );
 export const UserRoutes = router;

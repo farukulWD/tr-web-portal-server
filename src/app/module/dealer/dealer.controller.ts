@@ -5,11 +5,22 @@ import httpStatus from "http-status";
 
 const createUserController = catchAsync(async (req, res) => {
   const  dealerData  = req.body;
+  const files = req.files as {
+    nidPic?: Express.Multer.File[];
+    refNid?: Express.Multer.File[];
+    refPhoto?: Express.Multer.File[];
+  };
+  const filesArray = Object.entries(files).map(([fieldName, fileDetails]) => ({
+    ...fileDetails[0], 
+  }));
 
-  // Ensure req.files is defined and is an array
-  const files = Array.isArray(req.files) ? req.files : [];
+  console.log(filesArray)
 
-  const result = await DealerServicess.createDealerService(files, dealerData);
+ 
+
+
+
+  const result = await DealerServicess.createDealerService(filesArray, dealerData);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

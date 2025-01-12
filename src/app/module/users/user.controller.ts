@@ -19,13 +19,16 @@ const createUser = catchAsync(async (req, res) => {
     data: result,
   });
 });
+
+
+
 const getUsers = catchAsync(async (req, res) => {
   const result = await UserServices.getUsers();
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User created success',
+    message: 'User Fetched  success',
     data: result,
   });
 });
