@@ -46,6 +46,17 @@ const createDealerService = async (files: any[], payload: TDealer) => {
     if (user) {
       payload.code=user?.code as string
     }
+    if (!payload?.refPhoto) {
+      throw new AppError(httpStatus.BAD_REQUEST,"Ref Photo is required")
+    }
+    if (!payload?.nidPic) {
+      throw new AppError(httpStatus.BAD_REQUEST,"Nid is required")
+    }
+    if (!payload?.refNid) {
+      throw new AppError(httpStatus.BAD_REQUEST,"Ref Nid is required")
+    }
+   
+ 
 
     const newDealer = await Dealer.create([payload], { session });
 
@@ -68,6 +79,13 @@ const createDealerService = async (files: any[], payload: TDealer) => {
   }
 };
 
+
+const getAllDealer = async()=>{
+  const result = await Dealer.find()
+
+  return result
+}
 export const DealerServicess = {
   createDealerService,
+  getAllDealer
 };

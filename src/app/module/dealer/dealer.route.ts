@@ -19,4 +19,8 @@ router.post(
   DealerController.createUserController
 );
 
+router.get("/get-dealers", 
+   //   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  DealerController.getAllDealerController)
+
 export const dealerRoutes = router;

@@ -35,7 +35,7 @@ const updateProduct = catchAsync(async (req, res) => {
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
-        message: "Product created successfully",
+        message: "Product Updated successfully",
         success: true,
         data: result
     })
