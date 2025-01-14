@@ -3,7 +3,7 @@ import { Document, Schema, Types } from "mongoose";
 export interface IProduct {
     product: Schema.Types.ObjectId;
     price: number;
-    quantity: number; // Quantity for this specific product
+    quantity: number; 
 }
 export interface IOrder extends Document{
     _id : string;
