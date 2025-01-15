@@ -32,6 +32,18 @@ const getUsers = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getUser = catchAsync(async (req, res) => {
+  const token = req.headers.authorization
+  
+  const result = await UserServices.getUser(token as string) ;
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User Fetched  success',
+    data: result,
+  });
+});
 
 const updateUser = catchAsync(async (req, res) => {
   const data = req.body;
@@ -50,4 +62,5 @@ export const UserControllers = {
   createUser,
   updateUser,
   getUsers,
+  getUser
 };

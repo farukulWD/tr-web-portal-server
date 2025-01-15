@@ -20,7 +20,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
     // checking if the given token is valid
     const decoded = jwt.verify(
       token,
-      config.jwt_access_secret as string,
+      config.jwt_access_secret as string
     ) as JwtPayload;
 
     const { role, mobile, iat } = decoded;
@@ -33,6 +33,8 @@ const auth = (...requiredRoles: TUserRole[]) => {
     }
     // checking if the user is already deleted
 
+    // console.log(user);
+
     // checking if the user is blocked
     const userStatus = user?.status;
 
@@ -41,11 +43,10 @@ const auth = (...requiredRoles: TUserRole[]) => {
     }
 
     if (requiredRoles && !requiredRoles.includes(role)) {
-      throw new AppError(
-        httpStatus.UNAUTHORIZED,
-        'You are not authorized  hi!',
-      );
+      throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
     }
+
+    
 
     req.user = decoded as JwtPayload & { role: string };
     next();

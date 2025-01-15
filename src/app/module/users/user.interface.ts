@@ -10,9 +10,9 @@ export interface TUser extends Document {
   mobile: string;
   profileImg?: string;
   password: string;
-  code?:string;
+  code?: string;
   passwordChangedAt?: Date;
-  role: 'superAdmin' | 'admin' | 'user' | 'dealer';
+  role: 'superAdmin' | 'admin' | 'user' | 'dealer' | 'sr';
   status: 'active' | 'inactive';
   isDeleted: boolean;
   address?: {

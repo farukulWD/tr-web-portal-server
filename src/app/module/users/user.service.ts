@@ -1,3 +1,4 @@
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { User } from './user.model';
 import AppError from '../../errors/AppError';
@@ -6,20 +7,19 @@ import httpStatus from 'http-status';
 import { userInfo } from 'os';
 import { TUser } from './user.interface';
 import { generateUniqueCode } from '../../utils/generateUniqueCode';
+import config from '../../config';
 
 const createUserIntoDb = async (file: any, payload: TUser) => {
   // console.log(file)
 
   try {
-    
-
     if (file) {
       const imageName = `${payload?.name}`;
       const path = file?.path;
 
       //send image to cloudinary
       const { secure_url } = await sendImageToCloudinary(imageName, path);
-      console.log(secure_url)
+      console.log(secure_url);
       payload.profileImg = secure_url as string;
     }
 
@@ -30,14 +30,13 @@ const createUserIntoDb = async (file: any, payload: TUser) => {
     }
 
     // create a user (transaction-1)
-    payload.code= await generateUniqueCode()
-    payload.password = payload.mobile
-    payload.role="user"
+    payload.code = await generateUniqueCode();
+    payload.password = payload.mobile;
+    payload.role = 'user';
     const newUser = await User.create(payload); // array
 
     return newUser;
   } catch (err: any) {
-
     throw new Error(err);
   }
 };
@@ -60,9 +59,20 @@ const getUsers = async () => {
 
   return res;
 };
+const getUser = async (token: string) => {
+  const decoded = jwt.verify(
+    token,
+    config.jwt_access_secret as string
+  ) as JwtPayload;
+
+  const res = await User.findById({ _id: decoded?.userId });
+
+  return res;
+};
 
 export const UserServices = {
   createUserIntoDb,
   updateUser,
   getUsers,
+  getUser,
 };
