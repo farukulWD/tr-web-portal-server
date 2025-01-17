@@ -1,0 +1,4 @@
+Fri Jan 17 2025 16:13:53 } [PH] info: Connected to MongoDB successfully.
+Fri Jan 17 2025 16:13:53 } [PH] info: Server running on port 5000
+Fri Jan 17 2025 16:13:53 } [PH] info: Connected to RabbitMQ
+Fri Jan 17 2025 16:46:24 } [PH] info: SIGINT received. Closing server.

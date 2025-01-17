@@ -4,22 +4,18 @@ import { Product } from './product.model';
 import httpStatus from 'http-status';
 
 const createProduct = async (payload: IProduct) => {
-  let data = {
-    name: payload.name,
-    price: payload.price,
-    description: payload.description,
-    stock: payload.stock,
-    group: payload.group,
-  };
-  try {
-    const product = await Product.create(data);
-    return product;
-  } catch (error) {
+  if (!payload.name) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Product Name is required');
+  }
+  if (payload.stock < 0) {
     throw new AppError(
-      httpStatus.INTERNAL_SERVER_ERROR,
-      'Error creating product'
+      httpStatus.BAD_REQUEST,
+      'Stock must be possitive number '
     );
   }
+
+  const product = await Product.create(payload);
+  return product;
 };
 
 const getProduct = async (searchTerm: string) => {
