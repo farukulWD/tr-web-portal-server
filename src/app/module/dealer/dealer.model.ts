@@ -1,84 +1,86 @@
-import mongoose, { model, Schema, Document } from "mongoose";
-import { TUser, UserModel } from "../users/user.interface";
-
+import mongoose, { model, Schema, Document } from 'mongoose';
+import { TUser, UserModel } from '../users/user.interface';
 
 export interface TDealer extends TUser {
-    shopName:string;
-    code: string;
-    userId: mongoose.Types.ObjectId;
-    nidNo: string;
-    nidPic: string;
-    refName: string;
-    refNidNo: string;
-    refNid: string;
-    refMobile: string;
-    refPhoto: string;
-    class: string;
-    group: string;
-    money: number;
-    mobile:string;
+  shopName: string;
+  code: string;
+  userId: mongoose.Types.ObjectId;
+  nidNo: string;
+  nidPic: string;
+  refName: string;
+  refNidNo: string;
+  refNid: string;
+  refMobile: string;
+  refPhoto: string;
+  class: string;
+  group: string;
+  money: number;
+  mobile: string;
+  createdBy: string;
 }
 
 // Define the schema
 const dealerSchema = new Schema<TDealer>({
-    shopName:{
-        type:String,
-        required:true,
-        
-    },
-    code: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    userId: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    },
-    nidNo: {
-        type: String,
-        required: true
-    },
-    nidPic: {
-        type: String,
-        required: true
-    },
+  shopName: {
+    type: String,
+    required: true,
+  },
+  code: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  nidNo: {
+    type: String,
+    required: true,
+  },
+  nidPic: {
+    type: String,
+    required: true,
+  },
 
-    refNidNo: {
-        type: String,
-        required: true
-    },
-    refNid: {
-        type: String,
-        required: true
-    },
-    refMobile: {
-        type: String,
-        required: true
-    },
-    refPhoto: {
-        type: String,
-        required: true
-    },
-    class: {
-        type: String,
-    },
-    group: {
-        type: String,
-    },
-    mobile:{
-        type:String,
-        required:true,
-        unique:true
-    },
-    money: {
-        type: Number,
-        default: 0,
-        },
+  refNidNo: {
+    type: String,
+    required: true,
+  },
+  refNid: {
+    type: String,
+    required: true,
+  },
+  refMobile: {
+    type: String,
+    required: true,
+  },
+  refPhoto: {
+    type: String,
+    required: true,
+  },
+  class: {
+    type: String,
+  },
+  group: {
+    type: String,
+  },
+  mobile: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  money: {
+    type: Number,
+    default: 0,
+  },
 
-
-
+  createdBy: {
+    type: Schema.Types.String,
+    ref: 'User',
+    required: true,
+  },
 });
 // Pre-save hook
 // dealerSchema.pre('save', async function (next) {
@@ -105,4 +107,4 @@ const dealerSchema = new Schema<TDealer>({
 // });
 
 // Create and export the model
-export const Dealer = model<TDealer>("Dealer", dealerSchema);
+export const Dealer = model<TDealer>('Dealer', dealerSchema);

@@ -41,9 +41,14 @@ const addBalanceService = async(paylod:IBalance)=>{
 
 
 const getBalanceServices = async()=>{
-    const result = await Balance.find().populate("addedBy dealer")
+    const result = await Balance.find()
+    .populate("addedBy dealer")
+    .sort({ updatedAt: -1 });
     return result
 }
+
+
+
 
 
 

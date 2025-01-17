@@ -24,16 +24,14 @@ const createProduct = async (payload: IProduct) => {
 
 const getProduct = async (searchTerm: string) => {
   try {
-    // Start with an empty query object
     let query: any = {};
 
     if (searchTerm) {
-      // Build a dynamic query that checks if the search term is found in productCode, name, or group
       query = {
         $or: [
-          { productCode: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search for productCode
-          { name: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search for name
-          { group: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search for group
+          { productCode: { $regex: searchTerm, $options: 'i' } },
+          { name: { $regex: searchTerm, $options: 'i' } },
+          { group: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search for grou
         ],
         isDeleted: false,
       };
