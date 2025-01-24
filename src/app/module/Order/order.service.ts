@@ -2,59 +2,27 @@ import AppError from '../../errors/AppError';
 import { Dealer } from '../dealer/dealer.model';
 import { Product } from '../product/product.model';
 import { User } from '../users/user.model';
-import { IOrder } from './order.interface';
+import { IAddProduct, IOrder } from './order.interface';
 import { Order } from './order.model';
 import httpStatus from 'http-status';
 
 const createOrder = async (payload: IOrder) => {
-  const user = await Dealer.findOne({ _id: payload.dealer });
-  if (!user) {
+  const dealer = await Dealer.findOne({ code: payload.dealer });
+  if (!dealer) {
     throw new AppError(httpStatus.NOT_FOUND, 'Dealer not found');
   }
 
-  // Step 2: Validate all products
-  const productCodes = payload.product.map(product => product.product);
-  const products = await Product.find({ _id: { $in: productCodes } });
-
-  let total = 0;
-  payload.product.forEach(orderProduct => {
-    const product = products.find(
-      p => p._id.toString() === orderProduct.product.toString()
-    );
-    if (!product) {
-      throw new AppError(
-        httpStatus.NOT_FOUND,
-        `Product ${orderProduct.product} not found`
-      );
-    }
-
-    if (product.stock !== undefined && orderProduct.quantity > product.stock) {
-      throw new AppError(
-        httpStatus.BAD_REQUEST,
-        `Insufficient quantity for product ${orderProduct.product}`
-      );
-    }
-    if (product.price !== undefined) {
-      orderProduct.price = product.price;
-      // Add to total (price * quantity)
-      total += orderProduct.quantity * product.price;
-    }
-  });
-
-  // Step 4: Create the order
   const orderData = {
     ...payload,
-    total, // Include calculated total
+    dealer: dealer._id,
     status: 'pending',
     approved: false,
   };
 
   try {
     const order = await Order.create(orderData);
-
     return order;
   } catch (error) {
-    console.error('Error creating order:', error);
     throw new AppError(
       httpStatus.INTERNAL_SERVER_ERROR,
       'Error creating order'
@@ -62,9 +30,146 @@ const createOrder = async (payload: IOrder) => {
   }
 };
 
+const addProductOnOrder = async (payload: IAddProduct) => {
+  if (!payload?.productCode) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Product is Required');
+  }
+  if (!payload?.orderId) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Order id is required');
+  }
+  if (!payload.quantity || payload.quantity < 1) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Quantity must be at least 1');
+  }
+
+  if (!payload?.dealerCode) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Dealer code is requaired');
+  }
+
+  const dealer = await Dealer.findOne({ code: payload.dealerCode });
+  if (!dealer) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Dealer not found');
+  }
+
+  const product = await Product.findOne({ productCode: payload.productCode });
+
+  if (!product) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Product Not Found');
+  }
+
+  const findOrder = await Order.findOne({ _id: payload?.orderId });
+
+  if (dealer._id.toString() !== findOrder?.dealer?.toString()) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'You are not right person to make the order'
+    );
+  }
+
+  const totalPriceForThisProduct = parseFloat(
+    (product.price * payload.quantity).toFixed(2)
+  );
+
+  const total = (findOrder.total || 0) + totalPriceForThisProduct;
+
+  const result = await Order.findOneAndUpdate(
+    { _id: findOrder?._id },
+    {
+      $set: { total },
+      $push: {
+        product: {
+          product: product?._id,
+          price: product?.price,
+          quantity: payload?.quantity,
+        },
+      },
+    },
+    { new: true }
+  );
+
+  return result;
+};
+
+const deleteProductFromOrder = async (payload: {
+  orderId: string;
+  productId: string;
+  dealerCode: string;
+}) => {
+  if (!payload?.orderId) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Order ID is required');
+  }
+  if (!payload?.productId) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Product id is required');
+  }
+
+  const order = await Order.findOne({ _id: payload.orderId });
+  if (!order) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Order not found');
+  }
+
+  const dealer = await Dealer.findOne({ code: payload.dealerCode });
+  if (!dealer) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Dealer not found');
+  }
+
+  const productInOrder = order?.product?.find(
+    (item: any) => item?._id?.toString() === payload?.productId?.toString()
+  );
+
+  if (!productInOrder) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Product not found in the order'
+    );
+  }
+
+  if (dealer._id.toString() !== order?.dealer?.toString()) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'You are not right person to make the order'
+    );
+  }
+
+  const productTotalPrice = productInOrder?.price * productInOrder?.quantity;
+  const updatedTotal = (order.total || 0) - productTotalPrice;
+
+  const updatedOrder = await Order.findOneAndUpdate(
+    { _id: order._id },
+    {
+      $set: { total: updatedTotal },
+      $pull: { product: { _id: payload.productId } },
+    },
+    { new: true }
+  );
+
+  return updatedOrder;
+};
+
+const getDealerOrder = async (dealerCode: string) => {
+  const dealer = await Dealer.findOne({ code: dealerCode });
+  if (!dealer) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Dealer not found');
+  }
+
+  const getOrder = await Order.findOne({
+    dealer: dealer?._id,
+    orderType: 'confirm',
+  })
+    .populate('product.product')
+    .sort({ createdAt: -1 });
+
+  if (!getOrder) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Order not found');
+  }
+  getOrder.product = await getOrder?.product?.sort(
+    (a: any, b: any) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  return getOrder;
+};
+
 const activeOrder = async (payload: any) => {
   try {
-    // Extract order IDs from the payload
     let result = await Order.findOne({ _id: payload });
     if (!result) {
       throw new AppError(httpStatus.NOT_FOUND, `Order not found`);
@@ -134,7 +239,6 @@ const cancelOrder = async (id: string) => {
     await dealer.save();
     return order;
   } catch (error) {
-    console.log(error);
     throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'Error cancel order');
   }
 };
@@ -158,16 +262,18 @@ const deleteOrder = async (id: string) => {
     }
     // Delete the order
     await order.deleteOne();
-    console.log(`${order} order was deleted.`);
+
     return order;
   } catch (error) {
-    console.log(error);
     throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'Error delete order');
   }
 };
 
 export const OrderServices = {
   createOrder,
+  addProductOnOrder,
+  deleteProductFromOrder,
+  getDealerOrder,
   activeOrder,
   getOrder,
   getDraftOrder,

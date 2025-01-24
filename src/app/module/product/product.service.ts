@@ -27,7 +27,7 @@ const getProduct = async (searchTerm: string) => {
         $or: [
           { productCode: { $regex: searchTerm, $options: 'i' } },
           { name: { $regex: searchTerm, $options: 'i' } },
-          { group: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search for grou
+          { group: { $regex: searchTerm, $options: 'i' } }, 
         ],
         isDeleted: false,
       };
