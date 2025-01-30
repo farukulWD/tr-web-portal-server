@@ -28,7 +28,17 @@ const createUserController = catchAsync(async (req, res) => {
 });
 
 const getAllDealerController = catchAsync(async (req, res) => {
-  const result = await DealerServicess.getAllDealer();
+  const {code} = req?.params
+  const result = await DealerServicess.getDealer(code);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Dealer Fetched successfully',
+    data: result,
+  });
+});
+const getAllDealerControllers = catchAsync(async (req, res) => {
+  const result = await DealerServicess.getAllDealers();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -40,4 +50,5 @@ const getAllDealerController = catchAsync(async (req, res) => {
 export const DealerController = {
   createUserController,
   getAllDealerController,
+  getAllDealerControllers,
 };

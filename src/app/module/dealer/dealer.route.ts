@@ -2,6 +2,8 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { DealerController } from './dealer.controller';
 import { upload } from '../../utils/sendImageToCloudinary';
 import validateRequest from '../../middlewares/validateRequest';
+import { USER_ROLE } from '../users/user.constant';
+import auth from '../../middlewares/auth';
 
 const router = Router();
 
@@ -19,8 +21,11 @@ router.post(
   DealerController.createUserController
 );
 
-router.get("/get-dealers", 
-   //   auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+router.get("/get-dealer/:code", 
+     auth(USER_ROLE.superAdmin, USER_ROLE.admin,USER_ROLE.dealer),
   DealerController.getAllDealerController)
+router.get("/get-dealers", 
+     auth(USER_ROLE.superAdmin, USER_ROLE.admin),
+  DealerController.getAllDealerControllers)
 
 export const dealerRoutes = router;
