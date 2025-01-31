@@ -5,6 +5,7 @@ import { ProductRoutes } from "../module/product/product.route";
 import { OrderRoutes } from "../module/Order/order.route";
 import { dealerRoutes } from "../module/dealer/dealer.route";
 import { BalanceRoute } from "../module/Balance/balance.route";
+import { DoRoutes } from "../module/do/do.route";
 
 
 const router = Router()
@@ -35,6 +36,10 @@ const moduleRoutes =[
     {
       path: '/balance',
       route: BalanceRoute,
+    },
+    {
+      path: '/do',
+      route: DoRoutes,
     },
    
   ];
