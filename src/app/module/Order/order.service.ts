@@ -19,6 +19,8 @@ const createOrder = async (payload: IOrder) => {
     approved: false,
   };
 
+  console.log(orderData)
+
   try {
     const order = await Order.create(orderData);
     return order;
@@ -153,6 +155,7 @@ const getDealerOrder = async (dealerCode: string) => {
   const getOrder = await Order.findOne({
     dealer: dealer?._id,
     orderType: 'confirm',
+    status: 'pending',
   })
     .populate('product.product')
     .sort({ createdAt: -1 });
