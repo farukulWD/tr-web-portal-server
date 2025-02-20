@@ -72,7 +72,16 @@ const makeDoToDb = async (orderId: string) => {
 };
 
 const getAllDoFromDb = async () => {
-  const result = await Do.find({}).sort({ updatedAt: -1 }).populate("dealer product.product");
+  const result = await Do.find({})
+    .sort({ updatedAt: -1 })
+    .populate('dealer product.product');
+
+  return result;
+};
+const getSingleDoFromDb = async (id: string) => {
+  const result = await Do.findById({ _id: id }).populate(
+    'dealer product.product'
+  );
 
   return result;
 };
@@ -80,4 +89,5 @@ const getAllDoFromDb = async () => {
 export const DoServices = {
   makeDoToDb,
   getAllDoFromDb,
+  getSingleDoFromDb,
 };

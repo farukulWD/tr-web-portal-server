@@ -24,8 +24,19 @@ const getAllDo = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const getSingleDo = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const result = await DoServices.getSingleDoFromDb(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Do retrtive successfully',
+    data: result,
+  });
+});
 
 export const DoController = {
   makeDo,
   getAllDo,
+  getSingleDo,
 };
