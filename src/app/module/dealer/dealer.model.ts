@@ -16,7 +16,7 @@ export interface TDealer extends TUser {
   group: string;
   money: number;
   mobile: string;
-  createdBy: string;
+  createdBy: mongoose.Types.ObjectId;
 }
 
 // Define the schema
@@ -77,7 +77,7 @@ const dealerSchema = new Schema<TDealer>({
   },
 
   createdBy: {
-    type: Schema.Types.String,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },

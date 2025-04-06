@@ -7,6 +7,7 @@ import httpStatus from 'http-status';
 
 const createDealerService = async (files: any[], payload: TDealer) => {
   const session = await mongoose.startSession();
+  payload.createdBy = payload.userId
   try {
     session.startTransaction();
     const user = await User.findById(payload.userId);
