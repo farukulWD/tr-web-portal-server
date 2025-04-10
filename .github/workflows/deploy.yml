@@ -25,9 +25,9 @@ jobs:
         username: ${{ secrets.VPS_USERNAME }}
         key: ${{ secrets.VPS_SSH_KEY }}
         script: |
-          mkdir -p /var/www/tradeasia/api
-          chown -R $USER:$USER /var/www/tradeasia/api
-          chmod -R 755 /var/www/tradeasia/api
+          sudo mkdir -p /var/www/tradeasia/api
+          sudo chown -R $USER:$USER /var/www/tradeasia/api
+          sudo chmod -R 755 /var/www/tradeasia/api
 
     - name: Copy project to VPS and deploy
       uses: appleboy/scp-action@v0.1.4
