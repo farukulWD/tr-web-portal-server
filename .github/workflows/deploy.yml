@@ -13,6 +13,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/tr-api:latest .
+        docker push ${{ secrets.DOCKER_USERNAME }}/tr-api:latest
+
     - name: List files in the current directory
       run: |
         echo "Listing files in the workspace directory"
@@ -29,16 +43,7 @@ jobs:
           sudo chown -R $USER:$USER /var/www/tradeasia/api
           sudo chmod -R 755 /var/www/tradeasia/api
 
-    - name: Copy project to VPS and deploy
-      uses: appleboy/scp-action@v0.1.4
-      with:
-        host: ${{ secrets.VPS_HOST }}
-        username: ${{ secrets.VPS_USERNAME }}
-        key: ${{ secrets.VPS_SSH_KEY }}
-        source: "."
-        target: "/var/www/tradeasia/api"
-
-    - name: Run Docker container on VPS
+    - name: Pull Docker image from Docker Hub and run on VPS
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.VPS_HOST }}
@@ -46,6 +51,6 @@ jobs:
         key: ${{ secrets.VPS_SSH_KEY }}
         script: |
           cd /var/www/tradeasia/api
+          docker pull ${{ secrets.DOCKER_USERNAME }}/tr-api:latest
           docker stop api || true && docker rm api || true
-          docker build -t tr-api .
-          docker run -d -p 5000:5000 --name api tr-api
+          docker run -d -p 5000:5000 --name api ${{ secrets.DOCKER_USERNAME }}/tr-api:latest
