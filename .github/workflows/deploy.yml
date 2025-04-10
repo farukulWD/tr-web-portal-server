@@ -13,6 +13,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: List files for debugging
+      run: |
+        ls -la
+
     - name: Copy project to VPS and deploy
       uses: appleboy/scp-action@v0.1.4
       with:
@@ -26,7 +30,6 @@ jobs:
           ./src
           ./node_modules
           ./package-lock.json
-          # Add any other necessary files
         target: "/var/www/tradeasia/api"
 
     - name: Set permissions on the VPS
