@@ -5,6 +5,7 @@ import httpStatus from 'http-status';
 
 const createOrder = catchAsync(async (req, res) => {
   const data = req.body;
+  console.log(req.body)
 
   const code = req?.user?.code;
   const result = await OrderServices.createOrder({ ...data, dealer: code });

@@ -1,0 +1,39 @@
+name: Deploy Dockerized Express App to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            # Stop and remove existing container
+            docker stop tr-web-portal-server || true
+            docker rm tr-web-portal-server || true
+
+            # Clone the repo into /var/www/app if not exists
+            if [ ! -d /var/www/tr-web-portal-server ]; then
+              git clone https://github.com/farukulWD/tr-web-portal-server.git /var/www/tr-web-portal-server
+            fi
+
+            cd /var/www/tr-web-portal-server
+
+            # Pull latest changes
+            git pull origin main
+
+            # Build and run Docker container
+            docker build -t tr-web-portal-server .
+            docker run -d --name tr-web-portal-server -p 3000:3000 tr-web-portal-server
