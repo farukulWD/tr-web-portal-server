@@ -16,7 +16,7 @@ jobs:
     - name: List files in the current directory
       run: |
         echo "Listing files in the workspace directory"
-        ls -la /github/workspace
+        ls
 
     - name: Set permissions on VPS target directory
       uses: appleboy/ssh-action@master
