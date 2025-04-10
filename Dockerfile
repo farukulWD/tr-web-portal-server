@@ -1,21 +1,24 @@
 # Stage 1: Build
-FROM node:20-alpine as builder
+FROM node:18-alpine AS build
+
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
 
-COPY tsconfig.json ./
-COPY src ./src
-
+COPY . .
 RUN npm run build
 
 # Stage 2: Run
-FROM node:20-alpine
+FROM node:18-alpine
+
 WORKDIR /app
 
-COPY --from=builder /app/dist ./dist
 COPY package*.json ./
-RUN npm install --only=production
+RUN npm install --production
+
+COPY --from=build /app/dist ./dist
+
+EXPOSE 5000
 
 CMD ["node", "dist/server.js"]

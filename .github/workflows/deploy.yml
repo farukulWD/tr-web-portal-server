@@ -1,4 +1,4 @@
-name: Deploy Dockerized Express App to VPS
+name: Deploy API to VPS
 
 on:
   push:
@@ -10,30 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            # Stop old container if exists
-            docker stop tr-web-portal-server || true
-            docker rm tr-web-portal-server || true
-        
-            # Remove old repo if exists
-            rm -rf /var/www/tr-web-portal-server
-        
-            # Clone latest version
-            git clone https://github.com/farukulwd/tr-web-portal-server.git /var/www/tr-web-portal-server
-        
-            cd /var/www/tr-web-portal-server
-        
-            # Build Docker image
-            docker build -t tr-web-portal-server .
-        
-            # Run container
-            docker run -d --name tr-web-portal-server -p 3000:3000 tr-web-portal-server
+    - name: Copy project to VPS and deploy
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        source: "."
+        target: "/var/www/tradeasia/api"
+
+    - name: Run Docker container on VPS
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        script: |
+          cd /var/www/tradeasia/api
+          docker stop api || true && docker rm api || true
+          docker build -t tr-api .
+          docker run -d -p 5000:5000 --name api tr-api
