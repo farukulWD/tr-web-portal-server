@@ -6,10 +6,22 @@ import { IAddProduct, IOrder } from './order.interface';
 import { Order } from './order.model';
 import httpStatus from 'http-status';
 
-const createOrder = async (payload: IOrder) => {
+// TODO Need to make type
+const createOrder = async (payload: any) => {
   const dealer = await Dealer.findOne({ code: payload.dealer });
   if (!dealer) {
     throw new AppError(httpStatus.NOT_FOUND, 'Dealer not found');
+  }
+
+  const getOrder = await Order.findOne({
+    dealer: dealer._id,
+    orderType: 'confirm',
+    status: 'pending',
+  })
+    
+
+  if (getOrder) {
+    throw new AppError(httpStatus.BAD_REQUEST,"Order found already")
   }
 
   const orderData = {
@@ -18,8 +30,6 @@ const createOrder = async (payload: IOrder) => {
     status: 'pending',
     approved: false,
   };
-
-  console.log(orderData)
 
   try {
     const order = await Order.create(orderData);
@@ -152,8 +162,8 @@ const getDealerOrder = async (dealerCode: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Dealer not found');
   }
 
-  const getOrder = await Order.findOne({
-    dealer: dealer?._id,
+  let getOrder = await Order.findOne({
+    dealer: dealer._id,
     orderType: 'confirm',
     status: 'pending',
   })
@@ -161,12 +171,30 @@ const getDealerOrder = async (dealerCode: string) => {
     .sort({ createdAt: -1 });
 
   if (!getOrder) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Order not found');
+    const data = { orderType: 'confirm', dealer: dealerCode };
+    await createOrder(data);
+
+    // Try again after creating
+    getOrder = await Order.findOne({
+      dealer: dealer._id,
+      orderType: 'confirm',
+      status: 'pending',
+    })
+      .populate('product.product')
+      .sort({ createdAt: -1 });
+
+    if (!getOrder) {
+      // Now it’s really a problem
+      throw new AppError(httpStatus.NOT_FOUND, 'Order creation failed');
+    }
   }
-  getOrder.product = await getOrder?.product?.sort(
-    (a: any, b: any) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+
+  // By here, TypeScript knows getOrder is not null
+  getOrder.product =
+    getOrder.product?.sort(
+      (a: any, b: any) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    ) || [];
 
   return getOrder;
 };
