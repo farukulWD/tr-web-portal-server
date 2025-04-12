@@ -86,6 +86,19 @@ const getSingleDoFromDb = async (id: string) => {
   return result;
 };
 
+
+
+const approvedDo = async (id: string) => {
+
+if (!id) {
+  throw new AppError(httpStatus.BAD_REQUEST, 'Do id Required');
+  
+}
+
+
+   
+}
+
 export const DoServices = {
   makeDoToDb,
   getAllDoFromDb,
