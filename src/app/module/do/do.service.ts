@@ -4,7 +4,8 @@ import { Order } from '../Order/order.model';
 import { Dealer } from '../dealer/dealer.model';
 import { IDo } from './do,interface';
 import { ObjectId } from 'mongoose';
-import { Do } from './do.model';
+import { Do, undeliveredProducts } from './do.model';
+import { get } from 'http';
 
 const makeDoToDb = async (orderId: string) => {
   if (!orderId) {
@@ -86,21 +87,72 @@ const getSingleDoFromDb = async (id: string) => {
   return result;
 };
 
-
-
 const approvedDo = async (id: string) => {
+  if (!id) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Do id Required');
+  }
 
-if (!id) {
-  throw new AppError(httpStatus.BAD_REQUEST, 'Do id Required');
-  
-}
+  const getDo = await Do.findById({ _id: id }).populate('product.product');
 
+  if (!getDo) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Do not Found');
+  }
 
-   
+  const newProducts = getDo?.product.map((p: any) => {
+    return {
+      price: p?.price,
+      quantity: p?.quantity,
+      product: p?._id,
+      total: p?.price * p?.quantity,
+      orderCode: getDo?.orderCode,
+      doDate: p?.createdAt,
+      productCode: p?.product?.productCode,
+    };
+  });
+
+  // Check if undelivered entry exists for the dealer
+  const existingUndelivered = await undeliveredProducts.findOne({ dealer: getDo?.dealer });
+
+  let result;
+
+  if (existingUndelivered) {
+    // Push new products into the existing array
+    existingUndelivered.products.push(...newProducts);
+    result = await existingUndelivered.save();
+  } else {
+    // Create new undelivered entry
+    const undeliveredData = {
+      dealer: getDo?.dealer,
+      products: newProducts,
+    };
+    result = await undeliveredProducts.create(undeliveredData);
+  }
+
+  // Update DO status
+  await Do.findByIdAndUpdate(
+    { _id: getDo?._id },
+    { status: 'approved', approved: true }
+  );
+
+  // Update Order approved status
+  await Order.findOneAndUpdate(
+    { orderCode: getDo?.orderCode },
+    { approved: true }
+  );
+
+  return result;
+};
+
+const getAllUndeliveredProducts = async () => {
+  const result = await undeliveredProducts.find({}).populate('dealer products.product');
+
+  return result;
 }
 
 export const DoServices = {
   makeDoToDb,
   getAllDoFromDb,
   getSingleDoFromDb,
+  approvedDo,
+  getAllUndeliveredProducts
 };

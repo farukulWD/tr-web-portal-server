@@ -34,9 +34,31 @@ const getSingleDo = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const approvedDo = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const result = await DoServices.approvedDo(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Do approved successfully',
+    data: result,
+  });
+});
+
+const getAllUndeliveredProducts = catchAsync(async (req, res) => {
+  const result = await DoServices.getAllUndeliveredProducts();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Do retrtive successfully',
+    data: result,
+  });
+})
 
 export const DoController = {
   makeDo,
   getAllDo,
   getSingleDo,
+  approvedDo,
+  getAllUndeliveredProducts,
 };

@@ -52,4 +52,58 @@ const doSchema = new Schema<IDo>(
   }
 );
 
+const undeliveredProductSubSchema = new Schema<any>(
+  {
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    total: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    orderCode: {
+      type: String,
+      required: true,
+    },
+    doDate: {
+      type: Date,
+      required: true,
+    },
+    productCode: {
+      type: Number,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+const undeliveredSchema = new Schema(
+  {
+    dealer: {
+      type: mongoose.Schema.Types.String,
+      ref: 'Dealer',
+      required: true,
+    },
+
+ 
+    products: [undeliveredProductSubSchema],
+  },
+  {
+    timestamps: true,
+  }
+);
+
+export const undeliveredProducts = model('undeliveredProduct', undeliveredSchema);
 export const Do = model<IDo>('do', doSchema);
