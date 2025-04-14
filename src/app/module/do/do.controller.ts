@@ -55,10 +55,22 @@ const getAllUndeliveredProducts = catchAsync(async (req, res) => {
   });
 })
 
+const getSingleUndeliveredProducts = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const result = await DoServices.getSingleUndeliveredProducts(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Do retrtive successfully',
+    data: result,
+  });
+})
+
 export const DoController = {
   makeDo,
   getAllDo,
   getSingleDo,
   approvedDo,
   getAllUndeliveredProducts,
+  getSingleUndeliveredProducts,
 };

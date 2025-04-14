@@ -96,8 +96,11 @@ const undeliveredSchema = new Schema(
       ref: 'Dealer',
       required: true,
     },
+    totalUndeliveredAmount: {
+      type: Number,
+      default: 0,
+    },
 
- 
     products: [undeliveredProductSubSchema],
   },
   {
@@ -105,5 +108,8 @@ const undeliveredSchema = new Schema(
   }
 );
 
-export const undeliveredProducts = model('undeliveredProduct', undeliveredSchema);
+export const UndeliveredProducts = model(
+  'undeliveredProduct',
+  undeliveredSchema
+);
 export const Do = model<IDo>('do', doSchema);

@@ -4,7 +4,7 @@ import { Order } from '../Order/order.model';
 import { Dealer } from '../dealer/dealer.model';
 import { IDo } from './do,interface';
 import { ObjectId } from 'mongoose';
-import { Do, undeliveredProducts } from './do.model';
+import { Do, UndeliveredProducts } from './do.model';
 import { get } from 'http';
 
 const makeDoToDb = async (orderId: string) => {
@@ -98,45 +98,54 @@ const approvedDo = async (id: string) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'Do not Found');
   }
 
-  const newProducts = getDo?.product.map((p: any) => {
+  const newProducts = getDo.product.map((p: any) => {
     return {
-      price: p?.price,
-      quantity: p?.quantity,
-      product: p?._id,
-      total: p?.price * p?.quantity,
-      orderCode: getDo?.orderCode,
-      doDate: p?.createdAt,
-      productCode: p?.product?.productCode,
+      price: p.price,
+      quantity: p.quantity,
+      product: p?.product,
+      total: p.price * p.quantity,
+      orderCode: getDo.orderCode,
+      doDate: p.createdAt,
+      productCode: p.product?.productCode,
     };
   });
 
+  // Calculate total of new products
+  const newTotalAmount = newProducts.reduce((acc, curr) => acc + curr.total, 0);
+
   // Check if undelivered entry exists for the dealer
-  const existingUndelivered = await undeliveredProducts.findOne({ dealer: getDo?.dealer });
+  const existingUndelivered = await UndeliveredProducts.findOne({
+    dealer: getDo.dealer,
+  });
 
   let result;
 
   if (existingUndelivered) {
-    // Push new products into the existing array
+    // Push new products and update total amount
     existingUndelivered.products.push(...newProducts);
+    existingUndelivered.totalUndeliveredAmount =
+      (existingUndelivered.totalUndeliveredAmount || 0) + newTotalAmount;
+
     result = await existingUndelivered.save();
   } else {
     // Create new undelivered entry
     const undeliveredData = {
-      dealer: getDo?.dealer,
+      dealer: getDo.dealer,
       products: newProducts,
+      totalUndeliveredAmount: newTotalAmount,
     };
-    result = await undeliveredProducts.create(undeliveredData);
+    result = await UndeliveredProducts.create(undeliveredData);
   }
 
   // Update DO status
   await Do.findByIdAndUpdate(
-    { _id: getDo?._id },
+    { _id: getDo._id },
     { status: 'approved', approved: true }
   );
 
   // Update Order approved status
   await Order.findOneAndUpdate(
-    { orderCode: getDo?.orderCode },
+    { orderCode: getDo.orderCode },
     { approved: true }
   );
 
@@ -144,15 +153,29 @@ const approvedDo = async (id: string) => {
 };
 
 const getAllUndeliveredProducts = async () => {
-  const result = await undeliveredProducts.find({}).populate('dealer products.product');
+  const result = await UndeliveredProducts
+    .find({})
+    .populate('dealer products.product');
 
   return result;
-}
+};
+const getSingleUndeliveredProducts = async (undeliveredId: string) => {
+  if (!undeliveredId) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Undelivered id Required');
+  }
+
+  const result = await UndeliveredProducts
+    .findById({ _id: undeliveredId })
+    .populate('dealer products.product');
+
+  return result;
+};
 
 export const DoServices = {
   makeDoToDb,
   getAllDoFromDb,
   getSingleDoFromDb,
   approvedDo,
-  getAllUndeliveredProducts
+  getAllUndeliveredProducts,
+  getSingleUndeliveredProducts
 };
