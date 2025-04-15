@@ -100,10 +100,15 @@ const undeliveredSchema = new Schema(
       type: Number,
       default: 0,
     },
-    dealerCode:{
+    dealerCode: {
       type: Number,
       required: true,
+    },
 
+    status: {
+      type: String,
+      enum: ['pending', 'delivered'],
+      default: 'pending',
     },
 
     products: [undeliveredProductSubSchema],
