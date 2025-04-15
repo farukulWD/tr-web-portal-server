@@ -66,6 +66,17 @@ const getSingleUndeliveredProducts = catchAsync(async (req, res) => {
   });
 })
 
+const getUndeliveredProductsByDealer = catchAsync(async (req, res) => {
+  const dealerCode = req.params.dealerCode;
+  const result = await DoServices.getUndeliveredProductsByDealer(dealerCode);
+  sendResponse(res, { 
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Undelivered retrieve successfully',
+    data: result,
+  });
+})
+
 export const DoController = {
   makeDo,
   getAllDo,
@@ -73,4 +84,5 @@ export const DoController = {
   approvedDo,
   getAllUndeliveredProducts,
   getSingleUndeliveredProducts,
+  getUndeliveredProductsByDealer
 };

@@ -11,5 +11,6 @@ router.get('/get-single-do/:id', auth(USER_ROLE.superAdmin), DoController.getSin
 router.post('/approved-do/:id', auth(USER_ROLE.superAdmin), DoController.approvedDo);
 router.get('/get-all-undelivered-products', auth(USER_ROLE.superAdmin), DoController.getAllUndeliveredProducts);
 router.get('/get-single-undelivered-products/:id', auth(USER_ROLE.superAdmin), DoController.getSingleUndeliveredProducts);
+router.get('/get-undelivered-products-by-dealer/:dealerCode', auth(USER_ROLE.dealer), DoController.getUndeliveredProductsByDealer);
 
 export const DoRoutes = router;

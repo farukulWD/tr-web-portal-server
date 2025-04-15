@@ -100,6 +100,11 @@ const undeliveredSchema = new Schema(
       type: Number,
       default: 0,
     },
+    dealerCode:{
+      type: Number,
+      required: true,
+
+    },
 
     products: [undeliveredProductSubSchema],
   },

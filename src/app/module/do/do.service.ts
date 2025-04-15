@@ -98,6 +98,14 @@ const approvedDo = async (id: string) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'Do not Found');
   }
 
+  if (getDo.status === 'approved') {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Do already approved');
+  }
+  const dealer = await Dealer.findById({ _id: getDo.dealer });
+  if (!dealer) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Dealer not Found');
+  }
+
   const newProducts = getDo.product.map((p: any) => {
     return {
       price: p.price,
@@ -133,6 +141,7 @@ const approvedDo = async (id: string) => {
       dealer: getDo.dealer,
       products: newProducts,
       totalUndeliveredAmount: newTotalAmount,
+      dealerCode: dealer.code,
     };
     result = await UndeliveredProducts.create(undeliveredData);
   }
@@ -153,9 +162,9 @@ const approvedDo = async (id: string) => {
 };
 
 const getAllUndeliveredProducts = async () => {
-  const result = await UndeliveredProducts
-    .find({})
-    .populate('dealer products.product');
+  const result = await UndeliveredProducts.find({}).populate(
+    'dealer products.product'
+  );
 
   return result;
 };
@@ -164,10 +173,27 @@ const getSingleUndeliveredProducts = async (undeliveredId: string) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'Undelivered id Required');
   }
 
-  const result = await UndeliveredProducts
-    .findById({ _id: undeliveredId })
-    .populate('dealer products.product');
+  const result = await UndeliveredProducts.findById({
+    _id: undeliveredId,
+  }).populate('dealer products.product');
 
+  return result;
+};
+
+const getUndeliveredProductsByDealer = async (dealerCode: string) => {
+  if (!dealerCode) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Dealer dealer Code Required');
+  }
+
+  const dealer = await Dealer.findOne({ code: dealerCode });
+  if (!dealer) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Dealer not Found');
+  }
+  const result = await UndeliveredProducts.findOne({ dealerCode: dealerCode })
+    .populate('dealer products.product');
+  if (!result) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Undelivered not Found');
+  }
   return result;
 };
 
@@ -177,5 +203,6 @@ export const DoServices = {
   getSingleDoFromDb,
   approvedDo,
   getAllUndeliveredProducts,
-  getSingleUndeliveredProducts
+  getSingleUndeliveredProducts,
+  getUndeliveredProductsByDealer
 };
