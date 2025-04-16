@@ -1,11 +1,16 @@
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { DeliveredService } from './delivered.service';
+import httpStatus from 'http-status';
 
 const deliveredDo = catchAsync(async (req, res) => {
   const undeliveredId = req.params.undeliveredId;
+  const deliveredData = req.body;
 
-  const result = await DeliveredService.deliveredDo(undeliveredId);
+  const result = await DeliveredService.deliveredDo(
+    undeliveredId,
+    deliveredData
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

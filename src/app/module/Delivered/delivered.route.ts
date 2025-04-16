@@ -6,7 +6,7 @@ import { DeliveredController } from './delivered.controller';
 const router = Router();
 
 
-router.post('/make-delivered', auth(USER_ROLE.dealer), DeliveredController.deliveredDo )
+router.post('/make-delivered/:undeliveredId', auth(USER_ROLE.superAdmin), DeliveredController.deliveredDo )
 router.get('/get-all-delivered', auth(USER_ROLE.superAdmin), DeliveredController.getAllDelivered)
 
 export const DeliveredRoutes = router;

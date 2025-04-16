@@ -1,65 +1,79 @@
 import AppError from '../../errors/AppError';
 import { Dealer } from '../dealer/dealer.model';
 import { UndeliveredProducts } from '../do/do.model';
-import { IDeliveredProduct } from './delivered.interface';
+import { IDelivered, IDeliveredProduct } from './delivered.interface';
 import { DeliveredProducts } from './delivered.model';
+import httpStatus from 'http-status';
 
-const deliveredDo = async (undeliveredId: string) => {
+const deliveredDo = async (undeliveredId: string, deliveredData: IDelivered) => {
   if (!undeliveredId) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Undelivered id Required');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Undelivered ID is required');
   }
-  const undelivered = await UndeliveredProducts.findById({
-    _id: undeliveredId,
-  }).populate('product.product');
+
+  // Find the undelivered record and populate the product details
+  const undelivered = await UndeliveredProducts.findById(undeliveredId).populate('products.product');
   if (!undelivered) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Undelivered not Found');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Undelivered record not found');
   }
+
   if (undelivered.status === 'delivered') {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Undelivered already delivered');
+    throw new AppError(httpStatus.BAD_REQUEST, 'This has already been delivered');
   }
-  const dealer = await Dealer.findById({ _id: undelivered.dealer });
 
+  // Find the associated dealer
+  const dealer = await Dealer.findById(undelivered.dealer);
   if (!dealer) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Dealer not Found');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Dealer not found');
   }
-  const newProducts: IDeliveredProduct[] = undelivered.products.map(
-    (p: any) => {
-      return {
-        price: p.price,
-        quantity: p.quantity,
-        product: p?.product,
-        total: p.price * p.quantity,
-        orderCode: p.orderCode,
-        doDate: p.doDate,
-        productCode: p.product?.productCode,
-      };
-    }
-  );
 
-  // Calculate total of new products
-  const newTotalAmount = newProducts.reduce((acc, curr) => acc + curr.total, 0);
-
-  // Create new delivered product
-  const newDelivered = await DeliveredProducts.create({
-    dealer: dealer._id,
-    dealerCode: dealer.code,
-    totalDeliveredAmount: newTotalAmount,
-    products: newProducts,
+  // Prepare new delivered products array
+  const newProducts: IDeliveredProduct[] = undelivered.products.map((p: any) => {
+    return {
+      price: p.price,
+      quantity: p.quantity,
+      product: p?.product,
+      total: p.price * p.quantity,
+      orderCode: p.orderCode,
+      doDate: p.doDate,
+      productCode: p.product?.productCode,
+    };
   });
 
-  // Update undelivered product status to delivered
-  await UndeliveredProducts.findByIdAndUpdate(
-    { _id: undeliveredId },
-    {
-      status: 'delivered',
-      totalUndeliveredAmount:
-        undelivered?.totalUndeliveredAmount - newTotalAmount,
-    },
-    { new: true }
-  );
+  // Calculate total amount for delivered products
+  const newTotalAmount = deliveredData?.products?.reduce((acc, curr) => acc + curr.total, 0) || 0;
+
+  // Update each product in the undelivered document
+  const updatedProducts = undelivered.products.map((product: any) => {
+    const deliveredProduct = deliveredData?.products?.find(
+      (delivered: any) => delivered.product.toString() === product.product._id.toString()
+    );
+
+    if (deliveredProduct) {
+      const updatedQty = product.quantity - deliveredProduct.quantity;
+      const updatedTotal = product.total - deliveredProduct.total;
+
+      return {
+        ...product.toObject(), // ensure plain object
+        quantity: updatedQty >= 0 ? updatedQty : 0,
+        total: updatedTotal >= 0 ? updatedTotal : 0,
+      };
+    }
+
+    return product.toObject();
+  });
+
+  // Create new DeliveredProducts record
+  const newDelivered = await DeliveredProducts.create(deliveredData);
+
+  // Update the UndeliveredProducts record directly
+  console.log(updatedProducts);
+  (undelivered.products as any[]) = updatedProducts;
+  undelivered.totalUndeliveredAmount = undelivered.totalUndeliveredAmount - newTotalAmount;
+  await undelivered.save();
 
   return newDelivered;
 };
+
 
 const getAllDelivered = async () => {
   const result = await DeliveredProducts.find({})

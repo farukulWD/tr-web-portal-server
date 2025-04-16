@@ -9,7 +9,7 @@ import httpStatus from 'http-status';
 
 const app: Application = express();
 
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001','http://localhost:3002'];
 
 app.use(
   cors({
