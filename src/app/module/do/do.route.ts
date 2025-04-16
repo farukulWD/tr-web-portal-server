@@ -6,6 +6,7 @@ import { USER_ROLE } from '../users/user.constant';
 const router = Router();
 
 router.post('/make-do', auth(USER_ROLE.dealer), DoController.makeDo);
+router.patch("/reject-do/:id", auth(USER_ROLE.superAdmin), DoController.rejectDo);
 router.get('/get-all-do', auth(USER_ROLE.superAdmin), DoController.getAllDo);
 router.get('/get-single-do/:id', auth(USER_ROLE.superAdmin), DoController.getSingleDo);
 router.post('/approved-do/:id', auth(USER_ROLE.superAdmin), DoController.approvedDo);

@@ -15,6 +15,16 @@ const makeDo = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const rejectDo = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const result = await DoServices.rejectDo(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Do rejected successfully',
+    data: result,
+  });
+});
 const getAllDo = catchAsync(async (req, res) => {
   const result = await DoServices.getAllDoFromDb();
   sendResponse(res, {
@@ -81,6 +91,7 @@ const getUndeliveredProductsByDealer = catchAsync(async (req, res) => {
 
 export const DoController = {
   makeDo,
+  rejectDo,
   getAllDo,
   getSingleDo,
   approvedDo,
