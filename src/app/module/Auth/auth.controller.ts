@@ -9,14 +9,30 @@ const loginUser = catchAsync(async (req, res) => {
   const result = await AuthServices.loginUser(req.body);
   const { refreshToken, accessToken } = result;
 
+  // Get the origin and extract hostname
+  const origin = req.headers.origin;
+  const hostname = origin ? new URL(origin).hostname : undefined;
+
+  // Determine cookie domain (only in production)
+  let cookieDomain: string | undefined = undefined;
+
+  if (config.env === 'production' && hostname) {
+    const domainParts = hostname.split('.');
+    if (domainParts.length >= 2) {
+      cookieDomain = `.${domainParts.slice(-2).join('.')}`;
+    }
+  }
+
+  // Set the secure cookie with dynamic domain
   res.cookie('refreshToken', refreshToken, {
     secure: config.env === 'production',
     httpOnly: true,
     sameSite: 'strict',
-    domain: req.headers.origin,
-    maxAge: 1000 * 60 * 60 * 24 * 365,
+    domain: cookieDomain, // dynamic domain only in production
+    maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
   });
 
+  // Send response with access token
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
