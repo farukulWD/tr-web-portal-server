@@ -6,7 +6,6 @@ import sendResponse from '../../utils/sendResponse';
 import { AuthServices } from './auth.service';
 
 const loginUser = catchAsync(async (req, res) => {
-
   const result = await AuthServices.loginUser(req.body);
   const { refreshToken, accessToken } = result;
 
@@ -14,6 +13,7 @@ const loginUser = catchAsync(async (req, res) => {
     secure: config.env === 'production',
     httpOnly: true,
     sameSite: 'strict',
+    domain: req.headers.origin,
     maxAge: 1000 * 60 * 60 * 24 * 365,
   });
 

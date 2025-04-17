@@ -35,14 +35,7 @@ app.use(
 
 
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const ip = req.ip || req.connection.remoteAddress;
 
-  console.log(`Incoming request from origin: ${origin}, IP: ${ip}, URL: ${req.originalUrl}`);
-
-  next();
-});
 
 
 
