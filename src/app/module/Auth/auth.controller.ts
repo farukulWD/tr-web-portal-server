@@ -12,7 +12,7 @@ const loginUser = catchAsync(async (req, res) => {
   let cookieDomain: string | undefined = undefined;
 
   if (config.env === 'production') {
-    cookieDomain = '.tradeasiahrc.com'; // share across all subdomains
+    cookieDomain = '.tradeasiahrc.com'; 
   }
 
   res.cookie('refreshToken', refreshToken, {
