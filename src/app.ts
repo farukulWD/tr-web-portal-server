@@ -16,6 +16,7 @@ const allowedOrigins = [
   'https://api.tradeasiahrc.com',
   'https://tradeasiahrc.com',
   'https://portal.tradeasiahrc.com',
+  'https://admin.tradeasiahrc.com'
 ];
 
 app.use(
