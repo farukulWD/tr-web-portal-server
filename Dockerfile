@@ -26,6 +26,9 @@ COPY --from=build /app/dist ./dist
 # Copy the .env file from the local context to the container
 COPY .env .env
 
+# make uploads file 
+RUN mkdir -p /app/uploads
+
 EXPOSE 5000
 
 CMD ["node", "dist/server.js"]
