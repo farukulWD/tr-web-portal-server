@@ -33,7 +33,6 @@ const loginUser = catchAsync(async (req, res) => {
   });
 });
 
-
 const changePassword = catchAsync(async (req, res) => {
   const passwordData = req.body;
   const mobile = req.query.mobile as string;
