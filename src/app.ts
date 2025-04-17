@@ -22,6 +22,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
+      
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -31,6 +32,21 @@ app.use(
     credentials: true,
   })
 );
+
+
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const ip = req.ip || req.connection.remoteAddress;
+
+  console.log(`Incoming request from origin: ${origin}, IP: ${ip}, URL: ${req.originalUrl}`);
+
+  next();
+});
+
+
+
+
 
 app.use(cookieParser());
 app.use(express.json());
