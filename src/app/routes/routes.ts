@@ -8,6 +8,7 @@ import { BalanceRoute } from '../module/Balance/balance.route';
 import { DoRoutes } from '../module/do/do.route';
 import path from 'path';
 import { DeliveredRoutes } from '../module/Delivered/delivered.route';
+import { NPRoutes } from '../module/NP/np.route';
 
 const router = Router();
 
@@ -44,6 +45,10 @@ const moduleRoutes = [
     path: '/delivered',
     route: DeliveredRoutes,
   },
+  {
+    path:"/np",
+    route: NPRoutes
+  }
 ];
 
 moduleRoutes.forEach(route => router.use(route.path, route.route));

@@ -25,6 +25,9 @@ const makeDoToDb = async (orderId: string) => {
       price: p?.price,
       quantity: p?.quantity,
       product: p?.product,
+      sp: p?.sp,
+      np: p?.np,
+      total: p?.total,
     };
   });
 
@@ -38,20 +41,12 @@ const makeDoToDb = async (orderId: string) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'Dealer Not Found');
   }
 
-  const total =
-    Math.round(
-      products.reduce(
-        (acc, product) => acc + product.price * product.quantity,
-        0
-      ) * 100
-    ) / 100;
-
-  if (total > dealer?.money) {
+  if (order?.total > dealer?.money) {
     throw new AppError(httpStatus.BAD_REQUEST, 'You have not enough Mony');
   }
 
   const OrderData = {
-    total,
+    total: order?.total,
     product: products,
     orderCode: order?.orderCode,
     dealer: dealer?._id,
@@ -71,14 +66,13 @@ const makeDoToDb = async (orderId: string) => {
   const updateDealerAmount = await Dealer.findByIdAndUpdate(
     { _id: dealer?._id },
     {
-      money: dealer?.money - total,
+      money: dealer?.money - order?.total,
     },
     { new: true }
   );
 
   return result;
 };
-
 
 const rejectDo = async (id: string) => {
   if (!id) {
@@ -116,8 +110,8 @@ const rejectDo = async (id: string) => {
     },
     { new: true }
   );
- return updateOrder
-}
+  return updateOrder;
+};
 
 const getAllDoFromDb = async () => {
   const result = await Do.find({})

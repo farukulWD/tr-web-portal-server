@@ -1,5 +1,6 @@
 import AppError from '../../errors/AppError';
 import { Dealer } from '../dealer/dealer.model';
+import { NP } from '../NP/np.model';
 import { Product } from '../product/product.model';
 import { User } from '../users/user.model';
 import { IAddProduct, IOrder } from './order.interface';
@@ -17,11 +18,10 @@ const createOrder = async (payload: any) => {
     dealer: dealer._id,
     orderType: 'confirm',
     status: 'pending',
-  })
-    
+  });
 
   if (getOrder) {
-    throw new AppError(httpStatus.BAD_REQUEST,"Order found already")
+    throw new AppError(httpStatus.BAD_REQUEST, 'Order found already');
   }
 
   const orderData = {
@@ -43,62 +43,94 @@ const createOrder = async (payload: any) => {
 };
 
 const addProductOnOrder = async (payload: IAddProduct) => {
+  // Validation
   if (!payload?.productCode) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Product is Required');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Product is required');
   }
   if (!payload?.orderId) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Order id is required');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Order ID is required');
   }
   if (!payload.quantity || payload.quantity < 1) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Quantity must be at least 1');
   }
-
   if (!payload?.dealerCode) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Dealer code is requaired');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Dealer code is required');
   }
 
+  // Fetch Dealer
   const dealer = await Dealer.findOne({ code: payload.dealerCode });
   if (!dealer) {
     throw new AppError(httpStatus.NOT_FOUND, 'Dealer not found');
   }
 
+  // Fetch Product
   const product = await Product.findOne({ productCode: payload.productCode });
-
   if (!product) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Product Not Found');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Product not found');
   }
 
-  const findOrder = await Order.findOne({ _id: payload?.orderId });
+  // Fetch Order
+  const findOrder = await Order.findOne({ _id: payload.orderId });
+  if (!findOrder) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Order not found');
+  }
 
-  if (dealer._id.toString() !== findOrder?.dealer?.toString()) {
+  // Dealer validation for this order
+  if (dealer._id.toString() !== findOrder.dealer?.toString()) {
     throw new AppError(
-      httpStatus.NOT_FOUND,
-      'You are not right person to make the order'
+      httpStatus.FORBIDDEN,
+      'You are not authorized to add product to this order'
     );
   }
 
+  // Get National Percentage (np)
+  const np = await NP.find({});
+  const nationalPercentage = np?.[0]?.np ?? 0;
+  const spPercentage = payload?.sp ?? 0;
+  const totalPercentage = nationalPercentage + spPercentage;
+
+  // Calculate price for new product
   const totalPriceForThisProduct = parseFloat(
     (product.price * payload.quantity).toFixed(2)
   );
+  const spAmount = (totalPriceForThisProduct * totalPercentage) / 100;
+  const totalAfterSP = totalPriceForThisProduct - spAmount;
 
-  const total = (findOrder.total || 0) + totalPriceForThisProduct;
+  // Calculate existing order total (excluding SP)
+  const preGrandTotal =
+    findOrder?.product?.reduce((sum, row) => {
+      const price = row?.price ?? 0;
+      const quantity = row?.quantity ?? 0;
+      const sp = row?.sp ?? 0; 
+      const np = row?.np ?? nationalPercentage; 
+      const gross = price * quantity;
+      const commission = (gross * (sp + np)) / 100;
+      return sum + (gross - commission);
+    }, 0) ?? 0;
 
-  const result = await Order.findOneAndUpdate(
-    { _id: findOrder?._id },
+  // Final total after applying national commission
+  const finalTotal = preGrandTotal + totalAfterSP;
+
+  // Update the order with new product and updated total
+  const updatedOrder = await Order.findOneAndUpdate(
+    { _id: findOrder._id },
     {
-      $set: { total },
+      $set: { total: finalTotal },
       $push: {
         product: {
-          product: product?._id,
-          price: product?.price,
-          quantity: payload?.quantity,
+          product: product._id,
+          price: product.price,
+          quantity: payload.quantity,
+          sp: payload.sp,
+          total: totalAfterSP,
+          np: nationalPercentage,
         },
       },
     },
     { new: true }
   );
 
-  return result;
+  return updatedOrder;
 };
 
 const deleteProductFromOrder = async (payload: {
@@ -141,8 +173,9 @@ const deleteProductFromOrder = async (payload: {
     );
   }
 
-  const productTotalPrice = productInOrder?.price * productInOrder?.quantity;
-  const updatedTotal = (order.total || 0) - productTotalPrice;
+  const updatedTotal = (order.total || 0) - productInOrder?.total;
+
+  console.log(updatedTotal, order.total, productInOrder?.total);
 
   const updatedOrder = await Order.findOneAndUpdate(
     { _id: order._id },

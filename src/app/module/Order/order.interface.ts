@@ -4,7 +4,9 @@ export interface IProduct {
   product: Schema.Types.ObjectId;
   price: number;
   quantity: number;
- 
+  sp?: number;
+  np?: number;
+  total: number;
 }
 export interface IOrder extends Document {
   _id: string;
@@ -22,4 +24,7 @@ export interface IAddProduct {
   quantity: number;
   orderId: string;
   dealerCode: string;
+  sp?: number;
+  total?: number;
+  np?: number;
 }

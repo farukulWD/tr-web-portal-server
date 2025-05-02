@@ -4,6 +4,9 @@ export interface IProduct {
   product: Schema.Types.ObjectId;
   price: number;
   quantity: number;
+  sp?: number;
+  np?: number;
+  total?: number;
 }
 export interface IDo extends Document {
   _id?: string;

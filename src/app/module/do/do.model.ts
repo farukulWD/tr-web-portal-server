@@ -15,6 +15,15 @@ const productSubSchema = new Schema(
     price: {
       type: Number,
     },
+    sp:{
+      type: Number,
+    },
+    np:{
+      type: Number,
+    },
+    total:{
+      type: Number,
+    },
   },
   {
     timestamps: true,
