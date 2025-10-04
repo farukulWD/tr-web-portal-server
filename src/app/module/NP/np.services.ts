@@ -12,7 +12,7 @@ const createNp = async (npData: { np: number; createdBy: string }) => {
 
   const findNP = await NP.find({});
 
-  if (findNP) {
+  if (findNP.length > 0) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Np Already created');
   }
 
